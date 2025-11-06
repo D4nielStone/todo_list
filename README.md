@@ -26,3 +26,9 @@ cmake --build out
 
 ---
 ## Linux
+You will just need to install `build-essential` and `libglfw3-dev` with your package manager.
+**cmake command**:
+```bash 
+cmake -S . -B out
+cmake --build out
+```

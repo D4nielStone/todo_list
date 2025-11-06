@@ -5,7 +5,7 @@ void TLB::error(const std::string& msg) {
     throw std::runtime_error(msg);
 }
 void TLB::info(const std::string& msg) {
-    std::cout << breset << "TLB::" << bgreen << msg << "\n";
+    std::cout << breset << "TLB::" << bgreen << msg << "\n" << breset;
 }
 void TLB::initGraphics() {
     TLB::info("Creating new window...");
