@@ -10,10 +10,8 @@
 
 // \brief TLB is the main class. Todo List Bubble
 class TLB {
-private:
-    inline static GLFWwindow* m_window{ nullptr };
 public:
-    TLB();
+    static GLFWwindow* m_window;
     static void initGraphics();
     static void windowLoop();
     static void error(const std::string&);

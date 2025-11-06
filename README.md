@@ -18,7 +18,11 @@ You need:
    - MinGW or LLVM/Clang → if you prefer GCC-style.
    - 🔗 Download from https://sourceforge.net/projects/mingw/
 
+**cmake command**:
+```bash 
+cmake -S . -B out -G "MinGW Makefiles"
+cmake --build out
+```
+
 ---
 ## Linux
-To compile, you will need to install the glfw.
-`sudo apt-get install libglfw3-dev`
