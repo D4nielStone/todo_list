@@ -24,6 +24,15 @@ cmake -S . -B out -G "MinGW Makefiles"
 cmake --build out
 ```
 
+Don't forget to clone and compile glfw:
+```bash
+git clone https://github.com/glfw/glfw.git
+    cmake -S glfw -B glfw/build -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF
+    cmake --build glfw/build --config Release
+    mkdir -p libs/lib
+    cp glfw/build/src/libglfw3.a libs/lib/
+```
+
 ---
 ## Linux
 You will just need to install `build-essential` and `libglfw3-dev` with your package manager.
