@@ -1,5 +1,6 @@
 #include <iostream>
 #include "tlb.hpp"
+#include "bgui.hpp"
 
 GLFWwindow* TLB::m_window = nullptr;
 
@@ -16,7 +17,7 @@ void TLB::initGraphics() {
         TLB::error("Glfw initialization");
     }
     // step 2: create window and init glad
-    m_window = glfwCreateWindow(500, 700, "TLB::TodoListBubble", NULL, NULL);
+    m_window = glfwCreateWindow(500, 700, "TLB::Todo List Bubble Application", NULL, NULL);
     if (!m_window) {
         TLB::error("Invalid window");
     };
@@ -31,8 +32,17 @@ void TLB::initGraphics() {
 void TLB::windowLoop() {
     TLB::info("Starting main loop");
     while(!glfwWindowShouldClose(m_window)) {
+        // poll events
         glfwPollEvents();
-        
+
+        // --- //
+        // rendering
+        bgui::instance().clear();
+        bgui::instance().updateTree();
+        bgui::instance().render();
+        // --- //
+
+        // swap buffers
         glfwSwapBuffers(m_window);
     }
 }
