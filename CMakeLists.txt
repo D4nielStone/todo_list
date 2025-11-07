@@ -19,6 +19,10 @@ add_library(glad STATIC
     libs/include/glad/glad.c
 )
 
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include
+    )
+
 target_include_directories(glad PUBLIC
     ${CMAKE_SOURCE_DIR}/libs/include
     ${CMAKE_SOURCE_DIR}/libs/include/glad
@@ -27,38 +31,28 @@ target_include_directories(glad PUBLIC
 # platform-specific include directories
 if(WIN32)
     message(STATUS "Configuring for Windows (WIN32)")
-    message(STATUS "GLFW library path: ${CMAKE_SOURCE_DIR}/libs/lib/libglfw3.a")
-    
-    # GLFW import target
-    add_library(glfw STATIC IMPORTED)
+    set(GLFW_LIB "${CMAKE_SOURCE_DIR}/libs/lib/libglfw3.a")
 
-    set_target_properties(glfw PROPERTIES
-        IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/lib/libglfw3.a
-        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/libs/include
-        INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/libs/include/GLFW
-    )
+    if(NOT EXISTS ${GLFW_LIB})
+        message(FATAL_ERROR "GLFW static/import library not found: ${GLFW_LIB}")
+    endif()
 
-    include_directories(
-        ${CMAKE_SOURCE_DIR}/include
+    target_include_directories(TodoListBubble PRIVATE
+        ${CMAKE_SOURCE_DIR}/libs/include
         ${CMAKE_SOURCE_DIR}/libs/include/GLFW
         ${CMAKE_SOURCE_DIR}/libs/include/glad
-        ${CMAKE_SOURCE_DIR}/libs/include/
-        ${OPENGL_INCLUDE_DIR}
     )
-    
-    target_include_directories(TodoListBubble PUBLIC
-        ${CMAKE_SOURCE_DIR}/libs/include/GLFW
-        ${CMAKE_SOURCE_DIR}/libs/include/glad
-        ${CMAKE_SOURCE_DIR}/libs/include/
-        ${OPENGL_INCLUDE_DIR}
-    )
-    
-    target_link_libraries(TodoListBubble PUBLIC
-        glfw
+
+    # Link by full path and add required system libs
+    target_link_libraries(TodoListBubble PRIVATE
+        ${GLFW_LIB}
         glad
         opengl32
         gdi32
         user32
+        kernel32
+        ws2_32
+        winmm
     )
 else()
     message(STATUS "Configuring for Linux")
