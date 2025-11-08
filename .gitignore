@@ -30,7 +30,7 @@
 *.lai
 *.la
 *.lib
-.a
+*.a
 
 # Executables
 *.exe
