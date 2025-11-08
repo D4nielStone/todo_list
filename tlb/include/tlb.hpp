@@ -8,12 +8,21 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include "bgui.hpp"
 // \brief TLB is the main class. Todo List Bubble
 class TLB {
-public:
+private:
+    absolute_layout m_main_layout;
     static GLFWwindow* m_window;
-    static void initGraphics();
-    static void windowLoop();
+public:
+    TLB() = default;
+    ~TLB() = default;
+    static TLB& instance() {
+        static TLB instance;
+        return instance;
+    }
+    void initGraphics();
+    void windowLoop();
     static void error(const std::string&);
     static void info(const std::string&);
 };

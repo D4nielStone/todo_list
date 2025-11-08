@@ -3,9 +3,9 @@
 
 int main() {
     try {
-        std::cout << "Hello TodoListBubble! Trying to init the graphical library...\n";
-        TLB::initGraphics();
-        TLB::windowLoop();
+        std::cout << "Hello TodoListBubble! Trying to init Graphics...\n";
+        TLB::instance().initGraphics();
+        TLB::instance().windowLoop();
     } catch (std::exception& e) {
         std::cout << breset << "ERROR" << bred << e.what();
         return -1;

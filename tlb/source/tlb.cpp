@@ -38,8 +38,8 @@ void TLB::windowLoop() {
         // --- //
         // rendering
         bgui::instance().clear();
-        bgui::instance().updateTree();
-        bgui::instance().render();
+        bgui::instance().update(m_main_layout);
+        bgui::instance().render(m_main_layout);
         // --- //
 
         // swap buffers
