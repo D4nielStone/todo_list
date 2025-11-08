@@ -14,6 +14,7 @@ private:
     void bind();
     void unbind();
 
+    void compile(const char* vertex_path, const char* fragment_path);
     static GLuint compile(GLenum type, const std::string& source);
     static GLuint link(GLuint vert, GLuint frag);
 
@@ -21,4 +22,8 @@ private:
     void set_vec4(const char* name, const bgui_utils::vec4& vector);
     void set_vec3(const char* name, const bgui_utils::vec3& vector);
     void set_vec2(const char* name, const bgui_utils::vec2& vector);
+
+    bool operator==(const shader& other) const {
+        return m_id == other.m_id;
+    }
 };

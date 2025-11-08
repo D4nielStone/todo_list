@@ -22,3 +22,12 @@ std::string bgui_os::read_file(const std::string &path) {
     buffer << file.rdbuf();
     return buffer.str();
 }
+
+bgui_utils::mat4 bgui_os::get_projection() {
+    bgui_utils::mat4 proj;
+    auto size = bgui_os::get_window_size();
+    auto width = size[0];
+    auto height = size[1];
+    bgui_utils::orthographic(proj, 0.0f, static_cast<float>(width), static_cast<float>(height), 0.0f);
+    return proj;
+}

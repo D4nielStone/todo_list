@@ -3,7 +3,7 @@
 #include <algorithm>
 
 class layout : public element {
-private:
+protected:
     std::vector<std::unique_ptr<element>> m_elements;
 public:
     layout() = default;
@@ -26,22 +26,5 @@ public:
             return true;
         }
         return false;
-    }
-};
-
-class absolute_layout : public layout {
-public:
-    absolute_layout() = default;
-    ~absolute_layout() = default;
-
-    void draw() override {
-        for (const auto& elem : get_elements()) {
-            elem->draw();
-        }
-    }
-    void update() override {
-        for (const auto& elem : get_elements()) {
-            elem->update();
-        }
     }
 };

@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(bgui STATIC
     source/bgui.cpp
     source/element.cpp
+    source/elements/absolute_layout.cpp
     source/os/os.cpp
     source/gl/shader.cpp
     ) 

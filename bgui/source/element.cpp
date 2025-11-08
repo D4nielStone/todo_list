@@ -1,4 +1,5 @@
 #include "element.hpp"
+#include "bgui.hpp"
 
 void element::set_position(int x, int y) {
     m_x = x;
@@ -25,6 +26,10 @@ void element::set_rect(int x, int y, int width, int height) {
     m_height = height;
 }
 
+void element::set_shader(const shader & shd) {
+    m_shader = shd;
+}
+
 int element::get_x() const {
     return m_x;
 }
@@ -32,9 +37,13 @@ int element::get_x() const {
 int element::get_y() const {
     return m_y;
 }
+ 
+shader & element::get_shader() {
+    return m_shader;
+}
 
 int element::get_height() const {
-    return m_height;
+   return m_height;
 }
 
 int element::get_width() const {

@@ -30,7 +30,7 @@
 
 #pragma once
 #include "element.hpp"
-#include "layout.hpp"
+#include "elements/absolute_layout.hpp"
 #include "utils/mat.hpp"
 #include "utils/vec.hpp"
 #include <glad/glad.h>
@@ -53,8 +53,6 @@ public:
         return instance;
     }
 
-    bgui_utils::mat4 get_projection();
-
     // \{ 
     // style management
     void set_theme(theme gui_theme);
@@ -62,6 +60,7 @@ public:
     // \}
     // \{
     // rendering
+    GLuint get_quad_vao() const;
     void clear() const;
     void update(layout& lay);
     void render(layout& lay);

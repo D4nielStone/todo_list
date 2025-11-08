@@ -1,9 +1,27 @@
-#include "shader.hpp"
+#include <string>
+#include <map>
+#include <utility>
+#include "gl/shader.hpp"
+
+static std::map<std::pair<std::string, std::string>, GLuint> shader_cache;
 
 shader::shader(const char * vertex_path, const char * fragment_path) {
+    compile(vertex_path, fragment_path);
+}
+
+void shader::compile(const char * vertex_path, const char * fragment_path) {
+    bool vert_found = (shader_cache.find({vertex_path, fragment_path}) != shader_cache.end());
+    
+    if (vert_found) {
+        m_id = shader_cache[{vertex_path, fragment_path}];
+        return;
+    }
+
     GLuint vert = compile(GL_VERTEX_SHADER, bgui_os::read_file(vertex_path));
-    GLuint frag = compile(GL_FRAGMENT_SHADER, bgui_os::read_file(fragment_path));
+    GLuint frag =  compile(GL_FRAGMENT_SHADER, bgui_os::read_file(fragment_path));
+
     m_id = link(vert, frag);
+    shader_cache[{vertex_path, fragment_path}] = m_id;
 }
 
 shader::~shader() {
@@ -43,6 +61,7 @@ GLuint shader::compile(GLenum type, const std::string &source) {
 
     glDeleteShader(vert);
     glDeleteShader(frag);
+
     return m_id;
 }
 
