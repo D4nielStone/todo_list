@@ -6,7 +6,9 @@ class layout : public element {
 protected:
     std::vector<std::unique_ptr<element>> m_elements;
 public:
-    layout() = default;
+    layout() {
+        m_material.m_visible = false;
+    };
     ~layout() = default;
     template<typename T, typename... Args>
     T& add_element(Args&&... args) {

@@ -15,18 +15,22 @@ void shader::compile(const char * vertex_path, const char * fragment_path) {
     
     if (vert_found) {
         m_id = shader_cache[{vertex_path, fragment_path}];
+        m_should_delete = false;
         return;
     }
 
-    GLuint vert = compile(GL_VERTEX_SHADER, bgui_os::read_file(vertex_path));
-    GLuint frag =  compile(GL_FRAGMENT_SHADER, bgui_os::read_file(fragment_path));
+    GLuint vert = compile(GL_VERTEX_SHADER, bos::read_file(vertex_path));
+    GLuint frag =  compile(GL_FRAGMENT_SHADER, bos::read_file(fragment_path));
 
     m_id = link(vert, frag);
+    m_should_delete = true;
+
     shader_cache[{vertex_path, fragment_path}] = m_id;
 }
 
 shader::~shader() {
-    glDeleteProgram(m_id);
+    if(m_should_delete)
+        glDeleteProgram(m_id);
 }
 
 GLuint shader::compile(GLenum type, const std::string &source) {
@@ -40,7 +44,12 @@ GLuint shader::compile(GLenum type, const std::string &source) {
     if (!success) {
         char infoLog[512];
         glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        throw std::runtime_error("Shader compilation failed:\n" + std::string(infoLog));
+        throw std::runtime_error(
+            std::string("Shader compilation failed (") + 
+            (type == GL_VERTEX_SHADER ? "vertex" : "fragment") +
+            "): " + infoLog
+        );
+
     }
 
     return shader;
@@ -66,24 +75,39 @@ GLuint shader::compile(GLenum type, const std::string &source) {
     return m_id;
 }
 
-void shader::set_mat4(const char *name, const bgui_utils::mat4 &matrix) {
+void shader::set_mat4(const char *name, const butil::mat4 matrix) {
     GLint loc = glGetUniformLocation(m_id, name);
     glUniformMatrix4fv(loc, 1, GL_FALSE, matrix.data());
 }
 
-void shader::set_vec4(const char *name, const bgui_utils::vec4 &vector) {
+void shader::set_vec4(const char *name, const butil::vec4 &vector) {
     GLint loc = glGetUniformLocation(m_id, name);
     glUniform4f(loc, vector[0], vector[1], vector[2], vector[3]);
 }
 
-void shader::set_vec3(const char *name, const bgui_utils::vec3 &vector) {
+void shader::set_vec3(const char *name, const butil::vec3 &vector) {
     GLint loc = glGetUniformLocation(m_id, name);
     glUniform3f(loc, vector[0], vector[1], vector[2]);
 }
 
-void shader::set_vec2(const char *name, const bgui_utils::vec2 &vector) {
+void shader::set_vec2(const char *name, const butil::vec2 &vector) {
     GLint loc = glGetUniformLocation(m_id, name);
     glUniform2f(loc, vector[0], vector[1]);
+}
+    
+void shader::set_bool(const char* name, const bool& v) {
+    GLint loc = glGetUniformLocation(m_id, name);
+    glUniform1i(loc, v);
+}
+        
+void shader::set_int(const char* name, const int& v) {
+    GLint loc = glGetUniformLocation(m_id, name);
+    glUniform1i(loc, v);
+}        
+
+void shader::set_float(const char* name, const float& v) {
+    GLint loc = glGetUniformLocation(m_id, name);
+    glUniform1f(loc, v);
 }
 
 void shader::bind() {

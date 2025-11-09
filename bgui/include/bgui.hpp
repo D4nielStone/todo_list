@@ -33,6 +33,8 @@
 #include "elements/absolute_layout.hpp"
 #include "utils/mat.hpp"
 #include "utils/vec.hpp"
+#include <queue>
+#include <functional>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -43,7 +45,8 @@ enum class theme {
 class bgui {
 private:
     theme m_theme;
-    bgui_utils::color m_clear_color;
+    butil::color m_clear_color;
+    std::queue<std::function<void()>> m_gl_calls;
 public:
     bgui(theme gui_theme = theme::dark);
     ~bgui();
@@ -52,6 +55,8 @@ public:
         static bgui instance;
         return instance;
     }
+
+    void add_gl_call(const std::function<void()>& f);
 
     // \{ 
     // style management

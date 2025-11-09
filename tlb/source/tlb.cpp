@@ -4,13 +4,19 @@
 
 GLFWwindow* TLB::m_window = nullptr;
 
-void TLB::error(const std::string& msg) {
+void TLB::config_layout() {
+    element& test = m_main_layout.add_element<element>();
+    test.set_position(50, 50);
+}
+
+void TLB::error(const std::string &msg)
+{
     throw std::runtime_error(msg);
 }
 void TLB::info(const std::string& msg) {
     std::cout << breset << "TLB::" << bgreen << msg << "\n" << breset;
 }
-void TLB::initGraphics() {
+void TLB::init_graphics() {
     TLB::info("Creating new window...");
     // step 1: init glfw
     if (!glfwInit()) {
@@ -28,8 +34,10 @@ void TLB::initGraphics() {
         TLB::error("Glad initialization");
     }
     TLB::info("Window created");
+
+    config_layout();
 }
-void TLB::windowLoop() {
+void TLB::window_loop() {
     TLB::info("Starting main loop");
     while(!glfwWindowShouldClose(m_window)) {
         // poll events

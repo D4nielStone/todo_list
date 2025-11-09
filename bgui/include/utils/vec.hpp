@@ -2,7 +2,7 @@
 #include <cmath>
 #include <array>
 
-namespace bgui_utils {
+namespace butil {
     template<size_t N, typename T = float>
     class vec {
     public:
@@ -61,6 +61,10 @@ namespace bgui_utils {
             }
             return result;
         }
+
+        bool operator==(const vec<N, T>& other) const {
+            return v == other.v;
+        }
     };
 
     using vec4 = vec<4, float>;
@@ -72,4 +76,4 @@ namespace bgui_utils {
     using vec2i = vec<2, int>;
 
     using color = vec4;
-} // namespace bgui_utils
+} // namespace butil

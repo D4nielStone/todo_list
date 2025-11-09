@@ -21,8 +21,9 @@ public:
         static TLB instance;
         return instance;
     }
-    void initGraphics();
-    void windowLoop();
+    void config_layout();
+    void init_graphics();
+    void window_loop();
     static void error(const std::string&);
     static void info(const std::string&);
 };
