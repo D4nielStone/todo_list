@@ -48,6 +48,16 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+    
+        - name: Build GLFW for Windows
+      if: matrix.os == 'windows-latest'
+      shell: bash
+      run: |
+        git clone https://github.com/glfw/glfw.git
+        cmake -S glfw -B glfw/build -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF
+        cmake --build glfw/build --config Release
+        mkdir -p libs/lib
+        cp glfw/build/src/libglfw3.a libs/lib/libglfw3.a
 
     - name: Configure CMake Windows
       if: matrix.os == 'windows-latest'
@@ -59,17 +69,6 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
         
-    - name: Build GLFW for Windows
-      if: matrix.os == 'windows-latest'
-      shell: bash
-      run: |
-        git clone https://github.com/glfw/glfw.git
-        cmake -S glfw -B glfw/build -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF
-        cmake --build glfw/build --config Release
-        mkdir -p libs/lib
-        cp glfw/build/src/libglfw3.a libs/lib/libglfw3.a
-
-
       
     - name: Configure CMake Ubuntu
       if: matrix.os == 'ubuntu-latest'
