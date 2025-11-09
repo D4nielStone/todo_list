@@ -5,7 +5,8 @@
 GLFWwindow* TLB::m_window = nullptr;
 
 void TLB::config_layout() {
-    element& test = m_main_layout.add_element<element>();
+    bgui::instance().init_lib();
+    element& test = bgui::instance().get_main_layout().add_element<element>();
     test.set_position(50, 50);
 }
 
@@ -23,6 +24,8 @@ void TLB::init_graphics() {
         TLB::error("Glfw initialization");
     }
     // step 2: create window and init glad
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);    
+    glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);
     m_window = glfwCreateWindow(500, 700, "TLB::Todo List Bubble Application", NULL, NULL);
     if (!m_window) {
         TLB::error("Invalid window");
@@ -33,6 +36,10 @@ void TLB::init_graphics() {
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         TLB::error("Glad initialization");
     }
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     TLB::info("Window created");
 
     config_layout();
@@ -42,12 +49,12 @@ void TLB::window_loop() {
     while(!glfwWindowShouldClose(m_window)) {
         // poll events
         glfwPollEvents();
-
+        
         // --- //
-        // rendering
+        // renderingd
         bgui::instance().clear();
-        bgui::instance().update(m_main_layout);
-        bgui::instance().render(m_main_layout);
+        bgui::instance().update();
+        bgui::instance().render();
         // --- //
 
         // swap buffers

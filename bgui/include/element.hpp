@@ -36,12 +36,14 @@ public:
     void set_y(int y);
     void set_rect(int x, int y, int width, int height);
     void set_shader(const shader& shd);
+    void set_material(const butil::material& mhd);
     // \brief getters
     int get_x() const;
     int get_y() const;
     int get_width() const;
     int get_height() const;
     shader& get_shader();
+    butil::material& get_material();
 
     virtual void update();
     virtual void get_draw_calls(std::vector<draw_call>& calls);

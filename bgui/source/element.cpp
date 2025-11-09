@@ -34,6 +34,10 @@ void element::set_shader(const shader & shd) {
     m_material.m_shader = shd;
 }
 
+void element::set_material(const butil::material &mhd) {
+    m_material = mhd;
+}
+
 int element::get_x() const {
     return m_bounds[0];
 }
@@ -44,6 +48,10 @@ int element::get_y() const {
  
 shader & element::get_shader() {
     return m_material.m_shader;
+}
+ 
+butil::material & element::get_material() {
+    return m_material;
 }
 
 int element::get_height() const {

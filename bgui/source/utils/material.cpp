@@ -1,8 +1,8 @@
 #include "utils/material.hpp"
 #include "bgui.hpp"
 
-butil::material::material() : m_bg_color({0.05f, 0.05f, 0.05f, 0.05f}), m_border_color({0.07f, 0.07f, 0.07f, 0.07f}),
- m_border_radius(0.25f), m_border_size(20), m_bordered(true), m_visible(true) {
+butil::material::material() : m_bg_color({0.05f, 0.05f, 0.05f, 0.05f}), m_border_color({0.15f, 0.15f, 0.15f, 0.15f}),
+ m_border_radius(5.f), m_border_size(1), m_bordered(true), m_visible(true) {
     bgui::instance().add_gl_call([&](){
         m_shader.compile("quad.vs", "quad.fs");
     });

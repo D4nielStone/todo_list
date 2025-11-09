@@ -47,6 +47,7 @@ private:
     theme m_theme;
     butil::color m_clear_color;
     std::queue<std::function<void()>> m_gl_calls;
+    std::unique_ptr<absolute_layout> m_main_layout;
 public:
     bgui(theme gui_theme = theme::dark);
     ~bgui();
@@ -56,7 +57,9 @@ public:
         return instance;
     }
 
+    void init_lib();
     void add_gl_call(const std::function<void()>& f);
+    absolute_layout& get_main_layout();
 
     // \{ 
     // style management
@@ -67,6 +70,9 @@ public:
     // rendering
     GLuint get_quad_vao() const;
     void clear() const;
+
+    void update();
+    void render();
     void update(layout& lay);
     void render(layout& lay);
     // \}

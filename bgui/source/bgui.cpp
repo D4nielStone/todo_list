@@ -1,35 +1,56 @@
 #include "bgui.hpp"
 #include <os/os.hpp>
 #include <utils/vec.hpp>
+#include <stdexcept>
 
-bgui::bgui(theme gui_theme)
-    : m_theme(gui_theme), m_clear_color({0.0f, 0.0f, 0.0f, 1.0f}) {
-    set_theme(gui_theme);
+static bool init_trigger = false;
+
+bgui::bgui(theme gui_theme) : m_main_layout(nullptr), m_theme(gui_theme), m_clear_color({0.0f, 0.0f, 0.0f, 1.0f}) {
 }
 
 bgui::~bgui() {
 }
 
+void bgui::init_lib() {
+    init_trigger = true;
+    if(!m_main_layout)
+        m_main_layout = std::make_unique<absolute_layout>();
+    set_theme(m_theme);
+}
+
 void bgui::add_gl_call(const std::function<void()> &f) {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     m_gl_calls.push(f);
 }
 
-void bgui::set_theme(theme gui_theme)
-{
+absolute_layout &bgui::get_main_layout() {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
+    return *m_main_layout;
+}
+
+void bgui::set_theme(theme gui_theme) {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     // set the theme and update clear color accordingly
     m_theme = gui_theme;
     if (m_theme == theme::dark) {
-        m_clear_color = butil::color({0.1f, 0.1f, 0.1f, 1.0f});
+        m_clear_color = butil::color({0.1f, 0.1f, 0.1f, 0.95f});
     } else  if (m_theme == theme::light) {
-        m_clear_color = butil::color({0.9f, 0.9f, 0.9f, 1.0f});
+        m_clear_color = butil::color({0.9f, 0.9f, 0.9f, 0.95f});
     }
+
+    m_main_layout->get_material().m_visible = true;
+    m_main_layout->get_material().m_bg_color = m_clear_color;
+    m_main_layout->get_material().m_border_color = m_clear_color;
+
 }
 
 theme bgui::get_theme() const {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     return m_theme;
 }
 
 GLuint bgui::get_quad_vao() const {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     static GLuint quad_vao = 0;
 
     static bool initialized = false;
@@ -62,14 +83,28 @@ GLuint bgui::get_quad_vao() const {
 }
 
 void bgui::clear() const {
-    glClearColor(m_clear_color[0], m_clear_color[1], m_clear_color[2], m_clear_color[3]);
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
+    glClearColor(0.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     butil::vec2i size = bos::get_window_size();
     glViewport(0, 0, size[0], size[1]);
+}
 
+void bgui::update() {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
+    // the main layout must to be resized based on the window size.
+    butil::vec2i w_size = bos::get_window_size();
+    m_main_layout->set_rect(0.f, 0.f, static_cast<float>(w_size[0]), static_cast<float>(w_size[1]));
+
+    update(*m_main_layout);
+}
+void bgui::render() {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
+    render(*m_main_layout);
 }
 
 void bgui::update(layout &lay) {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     // call gl functions
     while (!m_gl_calls.empty()) {
         m_gl_calls.front()();
@@ -80,6 +115,7 @@ void bgui::update(layout &lay) {
 }
 
 void bgui::render(layout &lay) {
+    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     static std::vector<draw_call> calls;
     calls.clear();
     lay.get_draw_calls(calls);
