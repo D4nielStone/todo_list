@@ -31,10 +31,14 @@ target_include_directories(glad PUBLIC
 if(WIN32)
     message(STATUS "Configuring for Windows (WIN32)")
     set(GLFW_LIB "${CMAKE_SOURCE_DIR}/libs/lib/libglfw3.a")
-    set(FT_LIB "${CMAKE_SOURCE_DIR}/libs/lib/libglfw3.a")
+    set(FT_LIB "${CMAKE_SOURCE_DIR}/libs/lib/libfreetype.a")
 
     if(NOT EXISTS ${GLFW_LIB})
         message(FATAL_ERROR "GLFW static/import library not found: ${GLFW_LIB}")
+    endif()
+
+    if(NOT EXISTS ${FT_LIB})
+        message(FATAL_ERROR "FreeType static/import library not found: ${GLFW_LIB}")
     endif()
 
     target_include_directories(bgui PRIVATE
