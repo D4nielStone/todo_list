@@ -2,30 +2,19 @@
 #include "tlb.hpp"
 #include "bgui.hpp"
 #include "elem/text.hpp"
-#include "elem/hl.hpp"
+#include "elem/button.hpp"
 #include "elem/linear_layout.hpp"
 
 GLFWwindow* TLB::m_window = nullptr;
 
 void TLB::config_layout() {
     bgui::instance().init_lib();
-    bgui::instance().set_theme(butil::light_theme);
     auto& lay = bgui::instance().set_layout<linear_layout>(orientation::vertical);
-    lay.add<elements::hl>();
-    lay.add<elements::hl>();
-    lay.add<elements::text>("Todo List Bubble", 0.8f);
-    lay.add<elements::hl>();
-    lay.add<elements::hl>();
-    lay.add<elements::hl>();
-    lay.add<elements::text>("Text type 2", 0.5f);
-    lay.add<elements::text>("Text type 2", 0.5f);
-    lay.add<elements::text>("Text type 2", 0.5f);
-    lay.add<elements::hl>();
-    lay.add<elements::text>("Text type 2", 0.5f);
-    lay.add<elements::text>("Text type 2", 0.5f);
-    lay.add<elements::text>("Text type 2", 0.5f);
 
-    lay.set_aligniment(alignment::start);
+    lay.add<elements::text>("Todo", 0.8f);
+    auto& btn = lay.add<elements::button>("+", 0.8f, [&](){
+    });
+    btn.set_intern_spacing(20, 0);
     lay.set_cross_aligniment(alignment::center);
 }
 
@@ -34,6 +23,10 @@ void TLB::error(const std::string &msg) {
 }
 void TLB::info(const std::string& msg) {
     std::cout << breset << "TLB::" << bgreen << msg << "\n" << breset;
+}
+void TLB::add_task(const std::string & name) {
+    m_tasks.push_back({false, name});
+    info("adding task " + name);
 }
 void TLB::init_graphics() {
     TLB::info("Creating new window...");

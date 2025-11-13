@@ -22,6 +22,9 @@ namespace bos {
         GLuint atlas{0};
         std::unordered_map<char32_t, bos::character> chs{};
         butil::vec2 atlas_size{0.f, 0.f};
+        float ascent = 0.0f;
+        float descent = 0.0f;
+        float line_gap = 0.0f;
     };
 
     class font_manager {

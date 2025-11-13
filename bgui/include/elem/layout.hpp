@@ -17,9 +17,9 @@ protected:
     std::vector<std::unique_ptr<element>> m_elements;
     orientation m_orientation;
     alignment m_alignment, m_cross_alignment;
-    butil::vec<2, unsigned int> m_spacing;
+    butil::vec<2, unsigned int> m_spacing_elements;
 public:
-    layout() : m_orientation(orientation::horizontal), m_alignment(alignment::start), m_spacing(1) {
+    layout() : m_orientation(orientation::horizontal), m_alignment(alignment::start), m_spacing_elements(1) {
         m_material.m_visible = false;
     };
     ~layout() = default;
@@ -56,7 +56,7 @@ public:
         m_orientation = o;
     }
 
-    void set_spacing(const unsigned int a, const unsigned int b) {
-        m_spacing = {a, b};
+    void set_spacing_elements(const unsigned int a, const unsigned int b) {
+        m_spacing_elements = {a, b};
     }
 };

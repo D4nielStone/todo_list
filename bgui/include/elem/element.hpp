@@ -29,11 +29,13 @@ protected:
     butil::material m_material;
     // absolute position and size
     butil::vec4 m_bounds;
-    butil::vec<2, unsigned int> m_my_spacing;
+    butil::vec<2, unsigned int> m_intern_spacing {0, 0}, m_extern_spacing{0, 0};
 public:
     element();
     virtual ~element() = default;
     // \brief setters
+    void set_intern_spacing(int x, int y);
+    void set_extern_spacing(int x, int y);
     void set_position(int x, int y);
     void set_size(int width, int height);
     void set_x(int x);

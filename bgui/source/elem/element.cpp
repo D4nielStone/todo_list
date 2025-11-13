@@ -6,8 +6,15 @@ element::element() : m_bounds({0.f, 0.f, 50.f, 50.f}) {
     m_material.m_visible = false;
 }
 
-void element::set_position(int x, int y)
-{
+void element::set_extern_spacing(int x, int y) {
+    m_extern_spacing[0] = x;
+    m_extern_spacing[1] = y;
+}
+void element::set_intern_spacing(int x, int y) {
+    m_intern_spacing[0] = x;
+    m_intern_spacing[1] = y;
+}
+void element::set_position(int x, int y) {
     m_bounds[0] = x;
     m_bounds[1] = y;
 }

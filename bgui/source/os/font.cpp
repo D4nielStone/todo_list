@@ -57,7 +57,7 @@ bos::font &bos::font_manager::load_font(const std::string &font_name, const std:
     int padding = 2;
     int width = 0;
     int max_height = 0;
-    int ascend=0, descend=0;
+    int ascent=0, descent=0;
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     
@@ -68,11 +68,11 @@ bos::font &bos::font_manager::load_font(const std::string &font_name, const std:
             continue;
         }
 
-        ascend = std::max(ascend, face->glyph->bitmap_top);
+        ascent = std::max(ascent, face->glyph->bitmap_top);
         int desc = face->glyph->bitmap.rows - face->glyph->bitmap_top;
-        descend = std::max(descend, desc);
+        descent = std::max(descent, desc);
         width += face->glyph->bitmap.width + padding;
-        max_height = ascend + descend;
+        max_height = ascent + descent;
     }
     
     // Create atlas texture
@@ -95,7 +95,7 @@ bos::font &bos::font_manager::load_font(const std::string &font_name, const std:
         }
         FT_Bitmap& bmp = face->glyph->bitmap;
     
-        int yOffset = ascend - face->glyph->bitmap_top;
+        int yOffset = ascent - face->glyph->bitmap_top;
         glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, bmp.width, bmp.rows, GL_RED, GL_UNSIGNED_BYTE, bmp.buffer);
 
     
@@ -121,6 +121,10 @@ bos::font &bos::font_manager::load_font(const std::string &font_name, const std:
     
     _font.atlas = atlasTex;
     _font.atlas_size = { (float)width, (float)max_height };
+    _font.ascent   = face->size->metrics.ascender / 64.0f;
+    _font.descent  = std::abs(face->size->metrics.descender / 64.0f);
+    _font.line_gap = (face->size->metrics.height / 64.0f) - (_font.ascent + _font.descent);
+
     m_fonts.emplace(font_name, _font);
     FT_Done_Face(face);
     return m_fonts[font_name];
