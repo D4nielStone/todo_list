@@ -21,7 +21,7 @@
  * linear_layout layout(orientation::vertical);
  * layout.set_spacing(8);
  * layout.set_alignment(alignment::center);
- * layout.add<elements::text>("My Text", 40);
+ * layout.add<elements::text>("My Text", 0.5);
  * @endcode
  */
 

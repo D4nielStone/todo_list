@@ -29,6 +29,7 @@ protected:
     butil::material m_material;
     // absolute position and size
     butil::vec4 m_bounds;
+    butil::vec<2, unsigned int> m_my_spacing;
 public:
     element();
     virtual ~element() = default;

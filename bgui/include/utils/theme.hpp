@@ -3,16 +3,19 @@
 
 namespace butil {
     struct theme{
-        butil::color m_clear_color;
-        butil::color m_text_color;
+        butil::vec4 m_clear_color;
+        butil::vec4 m_text_color;
+        butil::vec4 m_hl_color;
     };
     
-    static theme light_theme = {
-        {0.86f, 0.86f, 0.86f, 1.f},
-        {0.f, 0.f, 0.f, 1.f}
+    static const theme light_theme = {
+        {0.89f, 0.89f, 0.89f, 1.f},
+        {0.f, 0.f, 0.f, 1.f},
+        {0.1f, 0.1f, 0.1f, 1.f}
     };
-    static theme dark_theme = {
+    static const theme dark_theme = {
         {0.11f, 0.11f, 0.11f, 1.f},
-        {1.f, 1.f, 1.f, 1.f}
+        {1.f, 1.f, 1.f, 1.f},
+        {0.9f, 0.9f, 0.9f, 1.f}
     };
 }; // namespace butil

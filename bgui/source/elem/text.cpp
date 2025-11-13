@@ -13,6 +13,7 @@ elements::text::text(const std::string &buffer, float scale) : m_buffer(buffer),
  m_font_name("Noto Sans-Condensed"), m_scale(scale) {
     set_font(m_font_name);
     set_theme(bgui::instance().get_theme());
+    m_material.m_use_tex = true;
     bgui::instance().add_gl_call([&](){
         m_material.m_shader.compile("assets/quad.vs", "assets/text.fs");
     });
@@ -27,42 +28,50 @@ void elements::text::set_font(const std::string &path) {
 }
 
 void elements::text::get_draw_calls(std::vector<draw_call>& calls) {
-    float line_size = m_scale * bos::font_manager::m_default_resolution;
+    float line_size = m_scale * 1.2 * bos::font_manager::m_default_resolution;
     const auto& chs = m_font.chs;
+    if (chs.empty()) return;
+
     float line_y = line_size;
-    float line_x = 0; 
-    float init_x = get_x();
-        
+    float line_x = 0.0f;
+    float max_line_width = 0.0f;
+    int line_count = 1;
+
     m_material.m_texture = m_font.atlas;
-        
-    int total_width = 0, total_height = 0;
-    for(char32_t ca : utf8_to_utf32(m_buffer)) {
-        if (chs.empty()) return;
-        // break line
-        if(ca == '\n') {line_y += line_size; line_x = 0; continue;}
 
-        // set char
-        bos::character ch{};
-        if(chs.find(ca) != chs.end()) ch = chs.at(ca);
-        else continue;
-        
-        auto bearing = (ch.bearing);
-        auto size = (ch.size);
-        float xpos = get_x() + line_x + m_scale * bearing[0];
-        float ypos = get_y() + line_y - (m_scale * bearing[1] - m_scale * size[1]);
+    for (char32_t ca : utf8_to_utf32(m_buffer)) {
+        if (ca == U'\n') {
+            // End of line
+            max_line_width = std::max(max_line_width, line_x);
+            line_y += line_size;
+            line_x = 0.0f;
+            line_count++;
+            continue;
+        }
 
-        float w = m_scale * size[0];
-        float h = m_scale * size[1];
-    
+        // Get glyph
+        auto it = chs.find(ca);
+        if (it == chs.end()) continue;
+        const auto& ch = it->second;
+
+        float xpos = get_x() + line_x + m_scale * ch.bearing[0];
+        float ypos = get_y() + line_y - (m_scale * ch.bearing[1] - m_scale * ch.size[1]);
+
+        float w = m_scale * ch.size[0];
+        float h = m_scale * ch.size[1];
+
         calls.push_back({
-            m_material, bgui::instance().get_quad_vao(), GL_TRIANGLES, 6, {
-                xpos, ypos, w, -h
-            }, ch.uv_min, ch.uv_max
+            m_material, bgui::instance().get_quad_vao(), GL_TRIANGLES, 6,
+            { xpos, ypos, w, -h },
+            ch.uv_min, ch.uv_max
         });
 
         line_x += ch.advance * m_scale;
-        total_height = line_y;
     }
-    total_width = line_x;
-    set_size(total_width, total_height);
-};
+
+    // Update width and height after loop
+    max_line_width = std::max(max_line_width, line_x);
+    float total_height = line_count * line_size;
+
+    set_size(max_line_width, total_height);
+}

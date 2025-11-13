@@ -132,5 +132,6 @@ void bgui::render(layout &lay) {
         
         glBindVertexArray(call.m_vao);
         glDrawArrays(call.m_mode, 0, call.m_count);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }

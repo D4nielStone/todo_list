@@ -22,11 +22,12 @@ namespace butil {
 
         vec(std::initializer_list<T> list) {
             size_t i = 0;
-            for (auto& value : list) {
-                if (i < N) {
+            for (auto value : list) {
+                if (i < N)
                     v[i++] = value;
-                }
             }
+            for (; i < N; ++i)
+                v[i] = T(0);
         }
 
         T& operator[](size_t index) {

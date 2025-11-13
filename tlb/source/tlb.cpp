@@ -2,15 +2,29 @@
 #include "tlb.hpp"
 #include "bgui.hpp"
 #include "elem/text.hpp"
+#include "elem/hl.hpp"
 #include "elem/linear_layout.hpp"
 
 GLFWwindow* TLB::m_window = nullptr;
 
 void TLB::config_layout() {
     bgui::instance().init_lib();
-    
+    bgui::instance().set_theme(butil::light_theme);
     auto& lay = bgui::instance().set_layout<linear_layout>(orientation::vertical);
-    lay.add<elements::text>("Todo List Bubble", 0.8);
+    lay.add<elements::hl>();
+    lay.add<elements::hl>();
+    lay.add<elements::text>("Todo List Bubble", 0.8f);
+    lay.add<elements::hl>();
+    lay.add<elements::hl>();
+    lay.add<elements::hl>();
+    lay.add<elements::text>("Text type 2", 0.5f);
+    lay.add<elements::text>("Text type 2", 0.5f);
+    lay.add<elements::text>("Text type 2", 0.5f);
+    lay.add<elements::hl>();
+    lay.add<elements::text>("Text type 2", 0.5f);
+    lay.add<elements::text>("Text type 2", 0.5f);
+    lay.add<elements::text>("Text type 2", 0.5f);
+
     lay.set_aligniment(alignment::start);
     lay.set_cross_aligniment(alignment::center);
 }
