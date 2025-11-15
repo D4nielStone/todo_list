@@ -10,12 +10,22 @@ GLFWwindow* TLB::m_window = nullptr;
 
 void TLB::config_layout() {
     bgui::instance().init_lib();
-    auto& lay = bgui::instance().set_layout<linear_layout>();
+    auto& lay = bgui::instance().set_layout<absolute_layout>();
 
-    // lateral panel
-    auto& p = lay.add<linear_layout>();
+    // lateral panel is a linear and vertical layout
+    auto& p = lay.add<linear_layout>(orientation::vertical);
+
+    // sets panel visible
     p.get_material().m_visible = true;
+
+    // set rect manually
     p.set_rect(0, 0, 200, 1000);
+
+    // cross alignment (horizontal)
+    p.set_cross_aligniment(alignment::center);
+
+    // add elements:
+    p.add<elements::text>("Tags", 0.5f).set_font("Noto Sans-Condensed");
 }
 
 void TLB::error(const std::string &msg) {
