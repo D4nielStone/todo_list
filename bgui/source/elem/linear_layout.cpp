@@ -82,6 +82,7 @@ void linear_layout::update() {
             cursor_main += elem->get_width() + spacing + elem->m_extern_spacing[0];
         }
     }
+    layout::update();
 }
 
 

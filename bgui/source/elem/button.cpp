@@ -1,5 +1,6 @@
 #include "elem/button.hpp"
 #include "bgui.hpp"
+#include <iostream>
 
 elements::button::button(const std::string &name, const float scale, const std::function<void()> &f) : 
     m_label(name, scale), m_function(f) {
@@ -13,6 +14,7 @@ elements::button::~button() {
 }
 
 void elements::button::update() {
+    m_material.set("u_bg_color", bgui::instance().get_theme().m_button_color);
     set_size(m_label.get_width() + m_intern_spacing[0]*2, m_label.get_height() + m_intern_spacing[1]*2);
 }
 
@@ -29,4 +31,11 @@ void elements::button::set_theme(const butil::theme &t) {
     m_material.set("u_border_size", 5.f);
     m_material.set("u_border_color", t.m_button_border_color);
     m_material.m_visible = true;
+}
+
+void elements::button::on_pressed() {
+    m_function();
+}
+void elements::button::on_mouse_hover() {
+    m_material.set("u_bg_color", bgui::instance().get_theme().m_button_hovered_color);
 }

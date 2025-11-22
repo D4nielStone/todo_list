@@ -11,6 +11,8 @@ namespace elements {
         button(const std::string& name, const float scale, const std::function<void()>& f);
         ~button();
         
+        void on_pressed() override;
+        void on_mouse_hover() override;
         void update() override;
         void get_draw_calls(std::vector<draw_call>& calls) override;
         void set_theme(const butil::theme& t) override;

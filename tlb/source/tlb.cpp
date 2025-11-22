@@ -13,19 +13,24 @@ void TLB::config_layout() {
     auto& lay = bgui::instance().set_layout<absolute_layout>();
 
     // lateral panel is a linear and vertical layout
-    auto& p = lay.add<linear_layout>(orientation::vertical);
+    auto& lp = lay.add<linear_layout>(orientation::vertical);
+    auto& center = lay.add<linear_layout>(orientation::vertical);
 
     // sets panel visible
-    p.get_material().m_visible = true;
+    lp.get_material().m_visible = true;
 
     // set rect manually
-    p.set_rect(0, 0, 200, 1000);
+    lp.set_rect(0, 0, 200, 1000);
+    center.set_rect(200, 0, 1000, 1000);
 
     // cross alignment (horizontal)
-    p.set_cross_aligniment(alignment::center);
+    lp.set_cross_aligniment(alignment::center);
 
     // add elements:
-    p.add<elements::text>("Tags", 0.5f).set_font("Noto Sans-Condensed");
+    lp.add<elements::text>("TLB", 0.3f).set_font("Noto Sans-Medium");
+    lp.add<elements::button>("+ Add a new Group", 0.3f, [](){
+        //auto& m = lp.new_modal();
+    }).set_intern_spacing(5, 5);
 }
 
 void TLB::error(const std::string &msg) {

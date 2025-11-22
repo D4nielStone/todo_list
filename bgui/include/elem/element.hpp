@@ -45,6 +45,8 @@ public:
     void set_material(const butil::material& mhd);
     virtual void set_theme(const butil::theme& theme) {
     };
+    virtual void on_pressed() {};
+    virtual void on_mouse_hover() {};
     // \brief getters
     int get_x() const;
     int get_y() const;

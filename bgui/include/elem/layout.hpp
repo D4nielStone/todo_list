@@ -65,4 +65,5 @@ public:
     void set_spacing_elements(const unsigned int a, const unsigned int b) {
         m_spacing_elements = {a, b};
     }
+    void update() override;
 };
