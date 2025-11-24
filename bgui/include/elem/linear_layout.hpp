@@ -30,9 +30,10 @@
 
 class linear_layout : public layout {
 public:
-    linear_layout(const orientation& ori = orientation::horizontal);
+    linear_layout(const butil::orientation& ori = butil::orientation::horizontal);
     ~linear_layout() = default;
 
     void update() override;
     void fit_to_content() override;
+    layout* as_layout() override { return this; }
 };

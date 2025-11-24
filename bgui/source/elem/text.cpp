@@ -10,9 +10,9 @@ std::u32string utf8_to_utf32(const std::string& str) {
 }
 
 elements::text::text(const std::string &buffer, float scale) : m_buffer(buffer),
-    m_font_name("Noto Sans-Medium"), m_scale(scale) {
+    m_font_name("Noto Sans-Condensed"), m_scale(scale) {
     set_font(m_font_name);
-    set_theme(bgui::instance().get_theme());
+    apply_theme(bgui::instance().get_theme());
     m_material.m_use_tex = true;
     m_material.m_shader.compile("quad.vs", "text.fs");
 }
@@ -25,7 +25,7 @@ void elements::text::set_font(const std::string &path) {
     m_font = i.get_font(path);
 }
 
-void elements::text::get_draw_calls(std::vector<draw_call>& calls) {
+void elements::text::get_draw_calls(std::vector<butil::draw_call>& calls) {
     const auto& chs = m_font.chs;
     if (chs.empty()) return;
     float ascent = m_font.ascent * m_scale;

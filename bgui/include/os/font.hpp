@@ -33,7 +33,7 @@ namespace bos {
         std::unordered_map<std::string, font> m_fonts;
         FT_Library ft;
     public:
-        static constexpr float m_default_resolution = 48.f;
+        static constexpr float m_default_resolution = 40.f;
         static font_manager& instance() {
             static font_manager f;
             return f;

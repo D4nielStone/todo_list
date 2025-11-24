@@ -3,41 +3,40 @@
 #include "bgui.hpp"
 #include "elem/text.hpp"
 #include "elem/button.hpp"
-#include "elem/box.hpp"
 #include "elem/linear_layout.hpp"
 
 GLFWwindow* TLB::m_window = nullptr;
 
 void TLB::config_layout() {
     bgui::instance().init_lib();
-    auto& lay = bgui::instance().set_layout<absolute_layout>();
+    auto& lay = bgui::instance().set_layout<layout>();
 
     // lateral panel is a linear and vertical layout
-    auto& lp = lay.add<linear_layout>(orientation::vertical);
-    auto& center = lay.add<linear_layout>(orientation::vertical);
+    auto& lp = lay.add<linear_layout>(butil::orientation::vertical);
+    auto& center = lay.add<linear_layout>(butil::orientation::vertical);
 
     // sets panel visible
     lp.get_material().m_visible = true;
+    lp.set_padding(5, 5);
 
     // set rect manually
     lp.set_rect(0, 0, 200, 1000);
     center.set_rect(200, 0, 1000, 1000);
 
     // cross alignment (horizontal)
-    lp.set_cross_aligniment(alignment::center);
+    lp.set_cross_aligniment(butil::alignment::stretch);
 
     // add elements:
-    
-    lp.add<elements::text>("TLB", 0.3f).set_font("Noto Sans-Medium");
-    lp.add<elements::button>("+ Add a new Group", 0.3f, [&](){
-        auto& m = lay.new_modal<linear_layout>(orientation::vertical);
-        m.set_cross_aligniment(alignment::center);
+    lp.add<elements::text>("Groups", 0.5f);
+
+    lp.add<elements::button>("+ Add a new Group", 0.5f, [&](){
+        auto& m = lay.new_modal<linear_layout>(butil::orientation::vertical);
+        m.set_cross_aligniment(butil::alignment::end);
         m.set_padding(5, 5);
-        m.get_material().set("u_bg_color", butil::color({0, 0, 0, 0.35}));
-        m.add<elements::text>("Exemple of a modal element:", 0.3f);
-        m.add<elements::button>("Close", 0.3f, [&](){
+        m.add<elements::text>("Exemple of a modal element:", 0.5f);
+        m.add<elements::button>("Close", 0.5f, [&](){
             lay.pop_modal();
-        });
+        }).set_intern_spacing(5, 5);
         m.get_material().m_visible = true;
     }).set_intern_spacing(5, 5);
 }

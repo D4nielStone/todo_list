@@ -14,12 +14,12 @@ bgui::~bgui() {
 void bgui::init_lib() {
     init_trigger = true;
     if(!m_main_layout)
-        set_layout<absolute_layout>();
+        set_layout<layout>();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
-    set_theme(m_theme);
+    apply_theme(m_theme);
 }
 
 void bgui::add_gl_call(const std::function<void()> &f) {
@@ -32,15 +32,12 @@ layout *bgui::get_layout() {
     return m_main_layout.get();
 }
 
-void bgui::set_theme(const butil::theme &gui_theme)
+void bgui::apply_theme(const butil::theme &gui_theme)
 {
     if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     // set the theme and update clear color accordingly
     m_theme = gui_theme;
-
-    for(auto& elem : m_main_layout->get_elements()) {
-        elem->set_theme(m_theme);
-    }
+    m_main_layout->apply_theme(gui_theme);
 }
 
 butil::theme bgui::get_theme() const {
@@ -102,6 +99,58 @@ void bgui::render() {
     render(*m_main_layout);
 }
 
+bool bgui::update_inputs(layout &lay){
+    auto m = bos::get_mouse_position();
+    float mx = m[0];
+    float my = m[1];
+
+    bool mouse_now = bos::get_pressed(bos::input_key::mouse_left);
+    bool mouse_click = (mouse_now && !m_last_mouse_left);
+    bool mouse_released = (!mouse_now && m_last_mouse_left);
+    
+    const auto& elements = lay.get_elements();   
+    const auto& modals = lay.get_modals();   
+
+    for (size_t i = elements.size(); i-- > 0; ) {
+        auto elem = elements[i].get();
+
+        if (auto* cast = elem->as_layout())
+            if(update_inputs(*cast)) {
+                return true;
+            }
+        
+        float x = elem->get_x() + lay.get_x();
+        float y = elem->get_y() + lay.get_y();
+        float w = elem->get_width();
+        float h = elem->get_height();
+
+        bool inside =
+            mx >= x &&
+            mx <= x + w &&
+            my >= y &&
+            my <= y + h;
+
+        if (modals.empty()) {
+            if (inside) {
+                elem->on_mouse_hover();
+                if (mouse_click) {
+                    elem->on_pressed();
+                    return true; 
+                }
+                if (mouse_released) {
+                    elem->on_released();
+                    return true; 
+                }
+            }
+        }
+        else {
+            update_inputs(*modals.front());
+            return true;
+        }
+    }
+    return false;
+}
+
 void bgui::update(layout &lay) {
     if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     // call gl functions
@@ -111,27 +160,30 @@ void bgui::update(layout &lay) {
     }
     
     lay.update();
+    update_inputs(lay);
+    m_last_mouse_left = bos::get_pressed(bos::input_key::mouse_left);
 }
 
 void bgui::render(layout &lay) {
     if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
-    static std::vector<draw_call> calls;
+    static std::vector<butil::draw_call> calls;
     calls.clear();
     lay.get_draw_calls(calls);
 
     const butil::mat4 proj = bos::get_projection();
 
-    for (draw_call& call : calls) {
+    butil::material* last_mat;
+    for (butil::draw_call& call : calls) {
         if(!call.m_material.m_visible) continue;
-
-        call.m_material.set("u_rect", call.m_bounds);
-        call.m_material.set("u_uv_min", call.m_uv_min);
-        call.m_material.set("u_uv_max", call.m_uv_max);
-        call.m_material.set("u_projection", proj);
-        call.m_material.bind_uniforms();
-        
+        // if the material is the same, skip the color set
+        if(*last_mat != call.m_material)
+            call.m_material.bind_uniforms();
+        call.m_material.m_shader.set("u_rect", call.m_bounds);
+        call.m_material.m_shader.set("u_uv_min", call.m_uv_min);
+        call.m_material.m_shader.set("u_uv_max", call.m_uv_max);
+        call.m_material.m_shader.set("u_projection", proj);
         glBindVertexArray(call.m_vao);
         glDrawArrays(call.m_mode, 0, call.m_count);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        last_mat = &call.m_material;
     }
 }

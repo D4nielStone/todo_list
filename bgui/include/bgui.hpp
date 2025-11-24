@@ -30,7 +30,7 @@
 
 #pragma once
 #include "elem/element.hpp"
-#include "elem/absolute_layout.hpp"
+#include "elem/layout.hpp"
 #include "utils/mat.hpp"
 #include "utils/vec.hpp"
 #include "utils/theme.hpp"
@@ -44,6 +44,8 @@ private:
     butil::theme m_theme;
     std::queue<std::function<void()>> m_gl_calls;
     std::unique_ptr<layout> m_main_layout;
+    // input
+    bool m_last_mouse_left = false;
 public:
     bgui(const butil::theme& theme = butil::dark_theme);
     ~bgui();
@@ -66,7 +68,7 @@ public:
 
     // \{ 
     // style management
-    void set_theme(const butil::theme& gui_theme);
+    void apply_theme(const butil::theme& gui_theme);
     butil::theme get_theme() const;
     // \}
     // \{
@@ -76,7 +78,8 @@ public:
 
     void update();
     void render();
-    void update(layout& lay);
+    bool update_inputs(layout & lay);
+    void update(layout &lay);
     void render(layout& lay);
     // \}
 };

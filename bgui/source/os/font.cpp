@@ -137,6 +137,10 @@ bos::font &bos::font_manager::get_font(const std::string& name) {
         load_font(name, m_system_fonts[name], m_default_resolution);
         return m_fonts[name];
     }
+    else if(!m_system_fonts.empty()) {
+        load_font(m_system_fonts.begin()->first, m_system_fonts.begin()->second, m_default_resolution);
+        return m_fonts[name];
+    }
     else throw std::runtime_error("font not found.");
 }
 

@@ -1,8 +1,10 @@
 #include "elem/element.hpp"
 #include "bgui.hpp"
 
-element::element() : m_bounds({0.f, 0.f, 50.f, 50.f}) {
-    set_theme(bgui::instance().get_theme());
+using namespace butil;
+
+element::element() : m_orientation(orientation::horizontal), m_alignment(alignment::start), m_spacing_elements(1) {
+    apply_theme(bgui::instance().get_theme());
     m_material.m_visible = false;
 }
 
@@ -61,7 +63,21 @@ void element::set_material(const butil::material &mhd) {
     m_material = mhd;
 }
 
+void element::set_cross_aligniment(const butil::alignment &al) {
+    m_cross_alignment = al;
+}
+void element::set_aligniment(const butil::alignment &al)
+{
+    m_alignment = al;
+}
+void element::set_orientation(const butil::orientation &o) {
+    m_orientation = o;
+}
+void element::set_spacing_elements(const unsigned int a, const unsigned int b) {
+    m_spacing_elements = {a, b};
+}
 int element::get_x() const {
+
     return m_bounds[0];
 }
 
@@ -81,12 +97,22 @@ int element::get_height() const {
    return m_bounds[3];
 }
 
-int element::get_width() const {
+butil::vec2i element::get_size() const {
+    return vec2i{(int)m_bounds[2], (int)m_bounds[3]};
+}
+butil::vec2i element::get_position() const {
+    return vec2i{(int)m_bounds[0], (int)m_bounds[1]};
+}
+butil::vec<2, unsigned int> element::get_extern_spacing() const
+{
+    return m_extern_spacing;
+}
+int element::get_width() const
+{
     return m_bounds[2];
 }
 
-
-void element::get_draw_calls(std::vector<draw_call>& calls) {
+void element::get_draw_calls(std::vector<butil::draw_call>& calls) {
     static bool shader_compiled = false;
     if(!shader_compiled) {
         m_material.m_shader.compile("quad.vs", "quad.fs");

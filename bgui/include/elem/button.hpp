@@ -12,9 +12,10 @@ namespace elements {
         ~button();
         
         void on_pressed() override;
+        void on_released() override;
         void on_mouse_hover() override;
         void update() override;
-        void get_draw_calls(std::vector<draw_call>& calls) override;
-        void set_theme(const butil::theme& t) override;
+        void get_draw_calls(std::vector<butil::draw_call>& calls) override;
+        void apply_theme(const butil::theme& t) override;
     };
 } // namespace elements

@@ -1,45 +1,12 @@
 #include "elem/layout.hpp"
 #include "bgui.hpp"
 
-layout::layout() : m_orientation(orientation::horizontal), m_alignment(alignment::start), m_spacing_elements(1) {
-        m_material.m_visible = false;
-        set_theme(bgui::instance().get_theme());
-    };
+layout::layout() : element() {
+    m_material.m_visible = false;
+    apply_theme(bgui::instance().get_theme());
+};
 
 void layout::update() {
-    auto m = bos::get_mouse_position();
-    float mx = m[0];
-    float my = m[1];
-
-    for (size_t i = m_elements.size(); i-- > 0; ) {
-        auto elem = m_elements[i].get();
-        if (m_modals.empty()) {
-            elem->update();
-        }
-
-        float x = elem->get_x();
-        float y = elem->get_y();
-        float w = elem->get_width();
-        float h = elem->get_height();
-
-        bool inside =
-            mx >= x &&
-            mx <= x + w &&
-            my >= y &&
-            my <= y + h;
-
-        // calculate inputs only if don't have modals
-        if (m_modals.empty()) {
-            if (inside) {
-                elem->on_mouse_hover();
-                // calculate click
-                if(bos::get_pressed(bos::input_key::mouse_left)) {
-                    elem->on_pressed();
-                }
-                break;
-            }
-        }
-    }
     if(!m_modals.empty()) {
         m_modals.front()->update();
         m_modals.front()->fit_to_content();
@@ -48,16 +15,31 @@ void layout::update() {
             get_y() + get_height()/2 - m_modals.front()->get_height()/2
         );
     }
+    for(auto& elem : m_elements) elem->update();
 }
 
 void layout::fit_to_content() {
-    set_size(50, 50);
+    // fit based on absolute layout
+    int max_width = 0, max_height = 0;
+    for(auto& elem : m_elements) {
+        max_width = std::max(max_width, elem->get_x() + elem->get_width());
+        max_height = std::max(max_height, elem->get_y() + elem->get_height());
+    }
+    set_size(max_width, max_height);
 }
 
-void layout::pop_modal() {
+std::vector<std::unique_ptr<element>> &layout::get_elements() {
+        return m_elements;
+    }
+
+std::queue<std::unique_ptr<layout>> &layout::get_modals() {
+        return m_modals;
+    }
+void layout::pop_modal()
+{
     m_modals.pop();
 }
-void layout::get_draw_calls(std::vector<draw_call> &calls)
+void layout::get_draw_calls(std::vector<butil::draw_call> &calls)
 {
     static bool shader_compiled = false;
     if(!shader_compiled) {
