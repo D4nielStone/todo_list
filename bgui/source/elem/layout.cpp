@@ -2,7 +2,7 @@
 #include "bgui.hpp"
 
 layout::layout() : element() {
-    m_material.m_visible = false;
+    m_visible = false;
     apply_theme(bgui::instance().get_theme());
 };
 

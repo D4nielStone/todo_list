@@ -1,5 +1,5 @@
 #pragma once
-#include "buttom.hpp"
+#include "text.hpp"
 #include <functional>
 
 namespace elements {
@@ -8,18 +8,13 @@ namespace elements {
     class text_input : public element {
     private:
         text m_buffer;
-        buttom m_buttom;
         std::string m_placeholder;
     public:
         /// \brief Contructor.
         /// \param buffer The initial text to inject on the buffer.
         /// \param scale The scale of the text.
-        /// \param buttom_label The label of the button.
-        /// \param f The function callback. Is called when the button is clicked.
         /// \param placeholder The message to display when the buffer is empty.
-        explicit text_input(const std::string& buffer, const float scale, const std::string& buttom_label = "done",
-            const std::function<void()>& f = nullptr,
-            const std::string& placeholder = "");
+        explicit text_input(const std::string& buffer, const float scale, const std::string& placeholder = "");
         ~text_input();
         
         void on_clicked() override;

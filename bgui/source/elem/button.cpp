@@ -47,7 +47,8 @@ void elements::button::apply_theme(const butil::theme &t) {
     m_material.set("u_border_radius", 4.f);
     m_material.set("u_border_size", 1.f);
     m_material.set("u_border_color", t.m_button_border_color);
-    m_material.m_visible = true;
+    m_visible = true;
+    m_label.apply_theme(t);
 }
 
 void elements::button::on_released() {

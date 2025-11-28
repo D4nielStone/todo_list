@@ -174,7 +174,6 @@ void bgui::render(layout &lay) {
 
     butil::material* last_mat;
     for (butil::draw_request& call : calls) {
-        if(!call.m_material.m_visible) continue;
         // if the material is the same, skip the color set
         if(*last_mat != call.m_material)
             call.m_material.bind_uniforms();

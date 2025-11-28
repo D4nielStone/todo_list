@@ -1,15 +1,19 @@
 #include "elem/text_input.hpp"
+#include "bgui.hpp"
 
-elements::text_input::text_input(const std::string& buffer, const float scale, const std::string& buttom_label,
-    const std::function<void()>& f, const std::string& placeholder)
-    : m_buffer(buffer, scale), m_buttom(buttom_label, f), m_placeholder(placeholder) {
+elements::text_input::text_input(const std::string& buffer, const float scale, const std::string& placeholder) :
+    m_buffer(buffer, scale), m_placeholder(placeholder) {
     apply_theme(bgui::instance().get_theme());
-    m_material.m_visible = true;
-    m_material.m_use_tex = true;
-    m_material.m_shader.compile("quad.vs", "text.fs");
+    m_visible = false;
+    m_material.m_shader.compile("quad.vs", "quad.fs");
 }
 
-void elements::text_input::on_clicked() {
+elements::text_input::~text_input()
+{
+}
+
+void elements::text_input::on_clicked()
+{
 }
 
 void elements::text_input::on_released() {
@@ -23,6 +27,9 @@ void elements::text_input::update() {
 }
 
 void elements::text_input::get_draw_requests(std::vector<butil::draw_request>& calls) {
+    element::get_draw_requests(calls);
     m_buffer.get_draw_requests(calls);
-    m_buttom.get_draw_requests(calls);
+}
+void elements::text_input::apply_theme(const butil::theme& t) {
+    m_buffer.apply_theme(t);
 }

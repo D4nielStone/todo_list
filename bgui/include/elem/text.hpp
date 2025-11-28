@@ -19,7 +19,7 @@ namespace elements {
         void get_draw_requests(std::vector<butil::draw_request>& calls) override;
         void apply_theme(const butil::theme& t) override {
             m_material.set("u_text_color", t.m_text_color);
-            m_material.m_visible = true;
+            m_visible = true;
         };
     };
 } // namespace elements
