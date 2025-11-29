@@ -1,5 +1,4 @@
 name: build
-
 on:
   push:
     branches: [ "main" ]
@@ -28,7 +27,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions:checkout@v4
+      uses: actions/checkout@v4
 
     # -------------------------------
     # Set up build environment variables
