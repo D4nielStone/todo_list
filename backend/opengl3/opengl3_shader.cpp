@@ -8,67 +8,67 @@
 
 static std::map<std::pair<std::string, std::string>, std::shared_ptr<GLuint>> shader_cache;
 static std::map<std::string, std::string> embedded_shaders = {
-    {"ui::default-vs", R"(#version 330 core
+    {"ui::default_vs", R"(#version 330 core
 layout(location = 0) in vec2 aPos;
 layout(location = 1) in vec2 aUv;
 
 out vec2 Uv;
 
-propertie vec4 u_rect;
-propertie mat4 u_projection;
+uniform vec4 rect;
+uniform mat4 projection;
 
 void main() {
-    vec2 pos = aPos * u_rect.zw + u_rect.xy;
+    vec2 pos = aPos * rect.zw + rect.xy;
     Uv = aUv;
-    gl_Position =  u_projection * vec4(pos, 0, 1);
+    gl_Position =  projection * vec4(pos, 0, 1);
     })"},
-    {"ui::default-fs", R"(#version 330 core
+    {"ui::default_fs", R"(#version 330 core
 
 in vec2 Uv; // UV coordinates from vertex shader (0..1)
 out vec4 FragColor;
 
-// properties
-propertie vec4 u_bg_color;
-propertie vec4 u_border_color;
-propertie bool u_bordered;
-propertie float u_border_radius;
-propertie float u_border_size;
-propertie vec4 u_rect;
+// uniforms
+uniform vec4 bg_color;
+uniform vec4 border_color;
+uniform bool bordered;
+uniform float border_radius;
+uniform float border_size;
+uniform vec4 rect;
 
 void main() {
-    if(u_bordered) {
-        vec2 pos = u_rect.zw * Uv;
-        vec2 halfSize = u_rect.zw / 2;
-        vec2 center = u_rect.zw * 0.5;
+    if(bordered) {
+        vec2 pos = rect.zw * Uv;
+        vec2 halfSize = rect.zw / 2;
+        vec2 center = rect.zw * 0.5;
     vec2 p = pos - center;
 
-    vec2 q = abs(p) - (center - vec2(u_border_radius));
-    float dist = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - u_border_radius;
+    vec2 q = abs(p) - (center - vec2(border_radius));
+    float dist = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - border_radius;
 
         if(dist > 0.0) discard;
-        if (dist > -u_border_size && u_bordered) {
-            FragColor = u_border_color;
+        if (dist > -border_size && bordered) {
+            FragColor = border_color;
         } else {
-            FragColor = u_bg_color;
+            FragColor = bg_color;
         }
     } else {
-        FragColor = u_bg_color;
+        FragColor = bg_color;
     }
-    })"}, {"ui::text-fs", R"(#version 330 core
+    })"}, {"ui::text_fs", R"(#version 330 core
 
 in vec2 Uv;
 out vec4 FragColor;
 
-propertie sampler2D u_texture;
-propertie vec4 u_text_color;     // RGBA text color
-propertie vec2 u_uv_min;
-propertie vec2 u_uv_max;
+uniform sampler2D tex;
+uniform vec4 text_color;     // RGBA text color
+uniform vec2 uv_min;
+uniform vec2 uv_max;
 
 void main() {
-    vec2 uv = mix(u_uv_min, u_uv_max, vec2(Uv.x, 1-Uv.y));
+    vec2 uv = mix(uv_min, uv_max, vec2(Uv.x, 1.0-Uv.y));
 
-    float dist = texture(u_texture, uv).r;
-    FragColor = vec4(u_text_color.rgb, u_text_color.a * dist);
+    vec4 dist = texture(tex, uv);
+    FragColor = dist;
 })"}
 };
 
@@ -79,7 +79,7 @@ shader::shader(const char * vertex_path, const char * fragment_path) {
 }
 
 void shader::compile(const char* vertex_path, const char* fragment_path) {
-    auto key = std::make_pair(std::string(vertex_path) + "- vs", std::string(fragment_path) + "- fs");
+    auto key = std::make_pair(std::string(vertex_path) + "_vs", std::string(fragment_path) + "_fs");
 
     auto it = shader_cache.find(key);
     if (it != shader_cache.end()) {
@@ -88,8 +88,8 @@ void shader::compile(const char* vertex_path, const char* fragment_path) {
     }
 
     // Uses default shader if don't found in embedded shaders
-    auto source_v = embedded_shaders.find(key.first) != embedded_shaders.end() ? embedded_shaders[key.first] : embedded_shaders["ui::default-vs"];
-    auto source_f = embedded_shaders.find(key.second) != embedded_shaders.end() ? embedded_shaders[key.second] : embedded_shaders["ui::default-fs"];
+    auto source_v = embedded_shaders.find(key.first) != embedded_shaders.end() ? embedded_shaders[key.first] : embedded_shaders["ui::default_vs"];
+    auto source_f = embedded_shaders.find(key.second) != embedded_shaders.end() ? embedded_shaders[key.second] : embedded_shaders["ui::default_fs"];
     GLuint vert = compile(GL_VERTEX_SHADER, source_v);
     GLuint frag = compile(GL_FRAGMENT_SHADER, source_f);
 
@@ -217,4 +217,24 @@ void shader::bind() {
 
 void shader::unbind() {
     glUseProgram(0);
+}
+
+shader* bgl::get_default_shader() {
+    static shader default_shader("ui::default", "ui::default");
+    return &default_shader;
+}
+
+shader* bgl::get_text_shader() {
+    static shader text_shader("ui::default", "ui::text");
+    return &text_shader;
+}
+
+shader* bgl::get_shader_from_tag(const std::string& name) {
+    if(name == "ui::default") {
+        return bgl::get_default_shader();
+    } else if(name == "ui::text") {
+        return bgl::get_text_shader();
+    } else {
+        return bgl::get_default_shader();
+    }
 }

@@ -18,7 +18,7 @@ protected:
     // absolute position and size
     butil::vec<2, butil::mode> m_size_mode {butil::mode::pixel, butil::mode::pixel};
     butil::vec<2, unsigned int> m_intern_spacing {0, 0}, m_extern_spacing{0, 0}, m_padding{0, 0};
-    butil::vec4 m_bounds{0, 0, 20, 20};
+    butil::vec4 m_bounds{0, 0, 0, 0};
 public:
     element();
     virtual ~element() = default;

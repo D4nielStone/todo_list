@@ -1,7 +1,7 @@
 #pragma once
 #include "material.hpp"
 #include "vec.hpp"
-#include <vector>
+#include <queue>
 
 namespace butil{
     // \brief A draw call structure containing the necessary information to render an element.
@@ -20,6 +20,6 @@ namespace butil{
     };
 
     struct draw_data {
-        std::vector<draw_request> m_quad_requests;
+        std::queue<draw_request> m_quad_requests;
     };
 }

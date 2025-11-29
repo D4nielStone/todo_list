@@ -7,7 +7,7 @@
 namespace butil {
     class material {
     public:
-        std::string m_shader_tag;
+        std::string m_shader_tag{"ui::default"};
         std::unordered_map<std::string, butil::propertie> m_properties;
         butil::texture m_texture;
         bool m_use_tex;

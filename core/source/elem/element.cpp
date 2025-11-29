@@ -121,7 +121,7 @@ int element::get_width() const
 void element::get_requests(butil::draw_data& data) {
     if(!m_visible) return;
     // by default draw just the background
-    data.m_quad_requests.push_back({m_material, 6, m_bounds});
+    data.m_quad_requests.push({m_material, 6, m_bounds});
 };
     
 void element::update() {

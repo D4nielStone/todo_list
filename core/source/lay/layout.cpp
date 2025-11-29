@@ -9,6 +9,8 @@ layout::layout() : element() {
 };
 
 void layout::update() {
+    for(auto& elem : m_elements) elem->update();
+
     if(!m_modals.empty()) {
         m_modals.front()->update();
         m_modals.front()->fit_to_content();
@@ -17,7 +19,6 @@ void layout::update() {
             get_y() + get_height()/2 - m_modals.front()->get_height()/2
         );
     }
-    for(auto& elem : m_elements) elem->update();
 }
 
 void layout::fit_to_content() {
@@ -42,8 +43,7 @@ void layout::pop_modal()
     m_modals.pop();
 }
 
-void layout::get_requests(butil::draw_data &data)
-{
+void layout::get_requests(butil::draw_data &data) {
     element::get_requests(data);
     // linear layouts get the draw call in addition order
     for (auto& elem : m_elements) {

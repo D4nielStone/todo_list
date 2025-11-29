@@ -8,5 +8,6 @@ OpenGL
 GLEW::GLEW)
 target_include_directories(bgui_backend_opengl3
     PUBLIC ${PROJECT_SOURCE_DIR}/backend
+    ${PROJECT_SOURCE_DIR}
     ${PROJECT_SOURCE_DIR}/core/include
 )

@@ -40,48 +40,6 @@ butil::theme bgui::get_theme() const {
     if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     return m_theme;
 }
-/*
-GLuint bgui::get_quad_vao() const {
-    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
-    static GLuint quad_vao = 0;
-
-    static bool initialized = false;
-    if (!initialized)
-        initialized = true;
-    else return quad_vao;
-    
-    if (quad_vao == 0) {
-        float quad_vertices[] = {
-            // positions   // texcoords
-            0.0f, 1.0f,   0.0f, 1.0f,
-            1.0f, 0.0f,   1.0f, 0.0f,
-            0.0f, 0.0f,   0.0f, 0.0f,
-            0.0f, 1.0f,   0.0f, 1.0f,
-            1.0f, 1.0f,   1.0f, 1.0f,
-            1.0f, 0.0f,   1.0f, 0.0f
-        };
-        GLuint VBO;
-        glGenVertexArrays(1, &quad_vao);
-        glGenBuffers(1, &VBO);
-        glBindVertexArray(quad_vao);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quad_vertices), quad_vertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    }
-    return quad_vao;
-}
-*//*
-void bgui::clear() const {
-    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
-    glClearColor(m_theme.m_clear_color[0], m_theme.m_clear_color[1], m_theme.m_clear_color[2], m_theme.m_clear_color[3]);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    butil::vec2i size = bos::get_window_size();
-    glViewport(0, 0, size[0], size[1]);
-}
-*/
 butil::draw_data* bgui::get_draw_data() {
     if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     return &instance().m_draw_data;
@@ -89,19 +47,18 @@ butil::draw_data* bgui::get_draw_data() {
 bool bgui::shutdown_lib() {
     return true;
 }
+// Updates the main layout
 void bgui::update() {
     if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
     // the main layout must to be resized based on the window size.
     butil::vec2i w_size = bos::get_window_size();
     instance().m_main_layout->set_rect(0.f, 0.f, static_cast<float>(w_size[0]), static_cast<float>(w_size[1]));
-
     instance().update(*instance().m_main_layout);
-}/*
-void bgui::render() {
-    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
-    render(*m_main_layout);
+
+    // Clean draw data and get new requests
+    while(!get_draw_data()->m_quad_requests.empty()) get_draw_data()->m_quad_requests.pop();
+    instance().m_main_layout->get_requests(*get_draw_data());
 }
-*/
 bool bgui::update_inputs(blay::layout &lay){
     auto m = bos::get_mouse_position();
     float mx = m[0];
@@ -155,7 +112,7 @@ bool bgui::update_inputs(blay::layout &lay){
 }
 void bgui::update(blay::layout &lay) {
     if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
-    // call gl functions
+    // call pre-update functions
     while (!m_calls.empty()) {
         m_calls.front()();
         m_calls.pop();
@@ -165,26 +122,3 @@ void bgui::update(blay::layout &lay) {
     update_inputs(lay);
     m_last_mouse_left = bos::get_pressed(bos::input_key::mouse_left);
 }
-/*
-void bgui::render(layout &lay) {
-    if(!init_trigger) throw std::runtime_error("BGUI::You must initialize the library.");
-    static std::vector<butil::draw_request> calls;
-    calls.clear();
-    lay.get_requests(calls);
-
-    const butil::mat4 proj = bos::get_projection();
-
-    butil::material* last_mat;
-    for (butil::draw_request& call : calls) {
-        // if the material is the same, skip the color set
-        if(*last_mat != call.m_material)
-            call.m_material.bind_properties();
-        call.m_material.m_shader.set("rect", call.m_bounds);
-        call.m_material.m_shader.set("uv_min", call.m_uv_min);
-        call.m_material.m_shader.set("uv_max", call.m_uv_max);
-        call.m_material.m_shader.set("projection", proj);
-        glBindVertexArray(call.m_vao);
-        glDrawArrays(call.m_mode, 0, call.m_count);
-        last_mat = &call.m_material;
-    }
-}*/

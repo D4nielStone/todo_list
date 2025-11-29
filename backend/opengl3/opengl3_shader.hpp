@@ -35,4 +35,7 @@ namespace bgl {
             return *m_program == *other.m_program;
         }
     };
+    shader* get_default_shader();
+    shader* get_text_shader();
+    shader* get_shader_from_tag(const std::string&);
 } // namespace bgl

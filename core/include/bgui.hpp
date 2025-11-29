@@ -53,16 +53,15 @@
 
 class bgui {
 private:
+    butil::draw_data m_draw_data;
     butil::theme m_theme;
+
     std::queue<std::function<void()>> m_calls;
     std::unique_ptr<blay::layout> m_main_layout;
-    // input
     bool m_last_mouse_left = false;
 public:
-    butil::draw_data m_draw_data;
     bgui(const butil::theme& theme = butil::light_theme);
     ~bgui();
-
     static bgui& instance() {
         static bgui instance;
         return instance;
@@ -85,8 +84,7 @@ public:
     // \}
     // \{
     // rendering
-    /*
-    GLuint get_quad_vao() const;*/
+    //
 
     static butil::draw_data* get_draw_data();
     static void set_up();

@@ -57,7 +57,7 @@ void belem::text::get_requests(butil::draw_data& data) {
     float max_line_width = 0.0f;
     int line_count = 1;
 
-    //m_material.m_texture = m_font.atlas; TODO: change to butil::texture
+    m_material.m_texture = m_font.atlas;
 
     for (char32_t ca : utf8_to_utf32(m_buffer)) {
         if (ca == U'\n') {
@@ -80,7 +80,7 @@ void belem::text::get_requests(butil::draw_data& data) {
         float w = m_scale * ch.size[0];
         float h = m_scale * ch.size[1];
 
-        data.m_quad_requests.push_back({
+        data.m_quad_requests.push({
             m_material, 6,
             { xpos, ypos, w, -h },
             ch.uv_min, ch.uv_max

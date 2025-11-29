@@ -17,7 +17,13 @@ namespace bos {
         release,
         repeat
     };
-    static std::unordered_map<input_key, input_action> s_input_map;
+    struct windowio {
+        butil::vec2i m_size{800, 600};
+        butil::vec2i m_mouse_position{0, 0};
+        std::unordered_map<input_key, input_action> m_input_map;
+        std::string m_title{""};
+    };
+    static windowio s_window_io;
 
     butil::vec2i get_window_size();
     butil::vec2i get_mouse_position();
