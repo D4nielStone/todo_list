@@ -37,7 +37,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libglfw3-dev libfreetype6-dev
+        sudo apt-get install -y libglfw3-dev libfreetype6-dev libglew-dev
 
     # -------------------------------
     # Windows Dependencies (MinGW)
@@ -88,7 +88,22 @@ jobs:
         cp -r freetype/include/* libs/include/freetype/
 
     # -------------------------------
-    # Configure CMake for Windows
+    # Build GLEW for Windows
+    # -------------------------------
+    - name: Build GLEW for Windows
+      if: matrix.os == 'windows-latest'
+      shell: bash
+      run: |
+        git clone https://github.com/nigels-com/glew.git
+        cmake -S glew -B glew/build -G "MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF
+        cmake --build glew/build --config Release
+        mkdir -p libs/lib
+        cp glew/build/lib/Release/glew32s.a libs/lib/libglew.a || cp glew/build/lib/libglew32s.a libs/lib/libglew.a
+        mkdir -p libs/include/GL
+        cp -r glew/include/GL/* libs/include/GL/
+
+    # -------------------------------
+    # Configure CMake Windows
     # -------------------------------
     - name: Configure CMake Windows
       if: matrix.os == 'windows-latest'
@@ -102,10 +117,12 @@ jobs:
         -DFREETYPE_LIBRARIES="${{ github.workspace }}/libs/lib/libfreetype.a"
         -DGLFW_INCLUDE_DIR="${{ github.workspace }}/libs/include"
         -DGLFW_LIBRARY="${{ github.workspace }}/libs/lib/libglfw3.a"
+        -DGLEW_INCLUDE_DIR="${{ github.workspace }}/libs/include"
+        -DGLEW_LIBRARY="${{ github.workspace }}/libs/lib/libglew.a"
         -S ${{ github.workspace }}
 
     # -------------------------------
-    # Configure CMake for Ubuntu
+    # Configure CMake Ubuntu
     # -------------------------------
     - name: Configure CMake Ubuntu
       if: matrix.os == 'ubuntu-latest'
