@@ -51,7 +51,7 @@ After initializing the library, you can set the main layout and add UI elements 
 
 - Initialize glfw and creates a window
 - Initialize the library
-- Set up the glfw and opengl configs
+- Set up the glfw and opengl/vulkan configs
 
 #### GLFW and Opengl Preset
 

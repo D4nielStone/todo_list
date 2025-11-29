@@ -3,8 +3,24 @@
 #include "utils/draw.hpp"
 
 namespace bkend {
+    struct vulkan_backend_data {
+        VkInstance instance = VK_NULL_HANDLE;
+        VkSurfaceKHR surface = VK_NULL_HANDLE;
+        VkDevice device = VK_NULL_HANDLE;
+        VkQueue graphicsQueue = VK_NULL_HANDLE;
+        VkDebugUtilsMessengerEXT debugMessenger = VK_NULL_HANDLE;
+    };
+
+    static vulkan_backend_data vk;
     void vulkan_render(butil::draw_data*);
     void create_vk_instance();
+    void create_vk_debug_messenger();
+    VKAPI_ATTR VkBool32 VKAPI_CALL bgui_vk_debug_callback(
+    VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT messageTypes,
+    const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData,
+    void* pUserData);
+
     //void vulkan_clear_texture_cache();
     void set_up_vulkan();
     void shutdown_vulkan();
