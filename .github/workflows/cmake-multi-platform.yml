@@ -28,7 +28,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions:checkout@v4
 
     # -------------------------------
     # Set up build environment variables
@@ -65,15 +65,29 @@ jobs:
         shell: cmd
 
     # -------------------------------
-    # Configure CMake (Unified)
+    # Configure CMake Ubuntu
     # -------------------------------
-    - name: Configure CMake
-      # Run this step on both OSes
+    - name: Configure CMake Ubuntu
+      if: matrix.os == 'ubuntu-latest'
       run: >
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{ github.workspace }}
+
+    # -------------------------------
+    # Configure CMake Windows (MinGW)
+    # FIX: Use CMAKE_PREFIX_PATH to help CMake find the Msys2/pacman libraries
+    # -------------------------------
+    - name: Configure CMake Windows
+      if: matrix.os == 'windows-latest'
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_PREFIX_PATH=/mingw64
         -S ${{ github.workspace }}
 
     # -------------------------------
