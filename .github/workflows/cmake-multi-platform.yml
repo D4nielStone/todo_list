@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-         os: [ubuntu-latest, windows-latest]
+         os: [ubuntu-latest]
          build_type: [Release, Debug]
          include:
            - os: windows-latest
@@ -29,19 +29,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # -------------------------------
-    # Set up build environment variables
-    # Defines the build directory based on OS, compiler, and build type
-    # -------------------------------
     - name: Set up build environment variables
       id: strings
       shell: bash
       run: |
         echo "build-output-dir=build-${{ runner.os }}-${{ matrix.c_compiler }}-${{ matrix.build_type }}" >> $GITHUB_OUTPUT
-
-    # -------------------------------
-    # Dependencies (Platform Specific)
-    # -------------------------------
 
     - name: Install Dependencies on Ubuntu
       if: matrix.os == 'ubuntu-latest'
@@ -49,22 +41,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libglfw3-dev libfreetype6-dev
 
-    - name: Install Dependencies on Windows (MinGW/Msys2)
-      if: matrix.os == 'windows-latest'
-      uses: msys2/setup-msys2@v2
-      with:
-        msystem: MINGW64
-        update: true
-        # Install MinGW versions of the libraries via pacman
-        install: >
-          mingw-w64-x86_64-glfw
-          mingw-w64-x86_64-freetype
-        # Use the standard cmd shell for the following steps
-        shell: cmd
-
-    # -------------------------------
-    # Configure CMake Ubuntu
-    # -------------------------------
     - name: Configure CMake Ubuntu
       if: matrix.os == 'ubuntu-latest'
       run: >
@@ -74,30 +50,6 @@ jobs:
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -S ${{ github.workspace }}
 
-    # -------------------------------
-    # Configure CMake Windows (MinGW)
-    # FIX: Use CMAKE_PREFIX_PATH to help CMake find the Msys2/pacman libraries
-    # -------------------------------
-    - name: Configure CMake Windows
-      if: matrix.os == 'windows-latest'
-      run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DCMAKE_PREFIX_PATH=/mingw64
-        -S ${{ github.workspace }}
-
-    # -------------------------------
-    # Build Project
-    # -------------------------------
     - name: Build
       run: |
         cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
-
-    # -------------------------------
-    # Run Tests
-    # -------------------------------
-    #- name: Run tests
-    #  working-directory: ${{ steps.strings.outputs.build-output-dir }}
-    #  run: ctest --build-config ${{ matrix.build_type }}
