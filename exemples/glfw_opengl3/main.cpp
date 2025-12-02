@@ -13,7 +13,9 @@ int main() {
     root.set_padding(10, 2);
 
     // Adding elements
-    root.add<bgui::text>("Linear Layout Stretched Exemple", 1.f).set_cross_alignment(bgui::alignment::center);
+    root.add<bgui::text>("Linear Layout Stretched Exemple\nIndividual Alignments:", 1.f).set_cross_alignment(bgui::alignment::center);
+    
+    // individual alignments
     root.add<bgui::text>("Start", 0.5f).set_cross_alignment(bgui::alignment::start);
     root.add<bgui::text>("End", 0.5f).set_cross_alignment(bgui::alignment::end);
     root.add<bgui::text>("Center", 0.5f).set_cross_alignment(bgui::alignment::center);
