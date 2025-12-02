@@ -1,5 +1,6 @@
 #pragma once
 #include "utils/draw.hpp"
+// That file give me too much work, so I prefer to keep it simple
 
 namespace bgui {
     void opengl3_render(bgui::draw_data*);

@@ -20,7 +20,8 @@ void bgui::set_up_freetype() {
 
     std::cout << "[FREETYPE] Initialized.\n";
 
-    ft_search_system_fonts();
+    ft_search_system_fonts("noto");
+
 
     std::cout << "[FREETYPE] Total system fonts found: " << s_system_fonts.size() << "\n";
 
@@ -45,19 +46,20 @@ inline bool ends_with(const std::string &str, const std::string &suffix) {
 }
 
 // Scan system fonts
-void bgui::ft_search_system_fonts() {
+void bgui::ft_search_system_fonts(const std::string& filter) {
 #ifdef _WIN32
     std::string folder = "C:\\Windows\\Fonts";
 #else
     std::string folder = "/usr/share/fonts";
 #endif
 
-    std::cout << "[FREETYPE] Scanning fonts in: " << folder << "\n";
+    std::cout << "[FREETYPE] Scanning fonts in: " << folder << (filter.empty() ? "" : " with filter: " + filter) << "\n";
 
     for (const auto &entry : std::filesystem::recursive_directory_iterator(folder)) {
         if (!entry.is_regular_file()) continue;
 
         auto path = entry.path().string();
+        if (!filter.empty() && path.find(filter) == std::string::npos) continue;
         if (!(ends_with(path, ".ttf") || ends_with(path, ".otf"))) continue;
 
         FT_Face face;
@@ -66,6 +68,7 @@ void bgui::ft_search_system_fonts() {
             std::string style  = face->style_name  ? face->style_name  : "(unknown)";
             s_system_fonts[family + "-" + style] = path;
 
+            // debug: TODO: add debug manager
             std::cout << "[FONT] Loaded: " << (family + "-" + style) << "\n";
             FT_Done_Face(face);
         }

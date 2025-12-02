@@ -17,7 +17,8 @@ namespace bgui {
         // sets to this text the font with `name`.
         void set_font(const std::string& name);
         void update() override;
-        void get_requests(bgui::draw_data* calls) override;
+        float get_text_width();
+        void get_requests(bgui::draw_data *calls) override;
         void apply_theme(const bgui::theme& t) override {
             m_material.set("text_color", t.m_text_color);
             m_visible = true;

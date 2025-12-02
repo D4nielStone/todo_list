@@ -44,6 +44,32 @@ void bgui::text::set_font(const std::string &path) {
     m_font = i.get_font(path);
 }
 
+float bgui::text::get_text_width() {
+    const auto& chs = m_font.chs;
+    if (chs.empty()) return 0.0f;
+
+    float line_x = 0.f;
+    float max_line_width = 0.0f;
+
+    for (char32_t ca : utf8_to_utf32(m_buffer)) {
+        if (ca == U'\n') {
+            max_line_width = std::max(max_line_width, line_x);
+            line_x = 0.f;
+            continue;
+        }
+
+        auto it = chs.find(ca);
+        if (it == chs.end()) continue;
+        const auto& ch = it->second;
+
+        line_x += ch.advance * m_scale;
+    }
+
+    // Garante que a última linha (que não termina em '\n') também seja considerada
+    max_line_width = std::max(max_line_width, line_x);
+    
+    return max_line_width;
+}
 void bgui::text::get_requests(bgui::draw_data* data) {
     const auto& chs = m_font.chs;
     if (chs.empty()) return;
@@ -55,6 +81,7 @@ void bgui::text::get_requests(bgui::draw_data* data) {
     float line_x = 0.f;
     float max_line_width = 0.0f;
     int line_count = 1;
+    int total_width = get_text_width();
 
     m_material.m_texture = m_font.atlas;
 
@@ -73,7 +100,23 @@ void bgui::text::get_requests(bgui::draw_data* data) {
         if (it == chs.end()) continue;
         const auto& ch = it->second;
 
-        float xpos = get_x() + line_x + m_scale * ch.bearing[0];
+        int originx = get_x();
+        switch(m_cross_alignment) {
+            case bgui::alignment::start:
+                originx = get_x();
+                break;
+            case bgui::alignment::center:
+                originx = get_x() + (get_width() - total_width) / 2;
+                break;
+            case bgui::alignment::end:
+                originx = get_x() + (get_width() - total_width);
+                break;
+            case bgui::alignment::stretch:
+                originx = get_x();
+                break;
+        }
+
+        float xpos = originx + line_x + m_scale * ch.bearing[0];
         float ypos = get_y() + line_y - (ch.bearing[1] * m_scale - ch.size[1] * m_scale);
 
         float w = m_scale * ch.size[0];
@@ -88,9 +131,7 @@ void bgui::text::get_requests(bgui::draw_data* data) {
         line_x += ch.advance * m_scale;
     }
 
-    // Update width and height after loop
-    max_line_width = std::max(max_line_width, line_x);
     float total_height = line_count * (ascent + descent + line_gap);
 
-    set_size(max_line_width, total_height);
+    set_size(total_width, total_height);
 }
