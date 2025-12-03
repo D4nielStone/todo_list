@@ -7,9 +7,9 @@
 #include <utils/propertie.hpp>
 
 namespace bgl {
-    class opengl3_shader {
+    class gl3_shader {
     private:
-        std::shared_ptr<GLuint> m_program{nullptr};
+        GLuint m_id;
         
         void set_mat4(const char* name, const bgui::mat4 matrix);
         void set_vec4(const char* name, const bgui::vec4 vector);
@@ -19,9 +19,9 @@ namespace bgl {
         void set_int(const char* name, const int v);
         void set_float(const char* name, const float v);
     public:
-        opengl3_shader() = default;
-        opengl3_shader(const char* vertex_path, const char* fragment_path);
-        ~opengl3_shader();
+        gl3_shader() = default;
+        gl3_shader(const char* vertex_path, const char* fragment_path);
+        ~gl3_shader();
         void bind();
         void unbind();
 
@@ -31,11 +31,12 @@ namespace bgl {
 
         void set(const std::string& name, const bgui::propertie u);
 
-        bool operator==(const opengl3_shader& other) const {
-            return *m_program == *other.m_program;
+        bool operator==(const gl3_shader& other) const {
+            return m_id == other.m_id;
         }
     };
-    opengl3_shader* get_default_opengl3_shader();
-    opengl3_shader* get_text_opengl3_shader();
-    opengl3_shader* get_opengl3_shader_from_tag(const std::string&);
+    gl3_shader* get_default_gl3_shader();
+    gl3_shader* get_text_gl3_shader();
+    gl3_shader* get_gl3_shader_from_tag(const std::string&);
+    static void delete_gl3_shaders();
 } // namespace bgl

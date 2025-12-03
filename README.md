@@ -65,7 +65,7 @@ int main() {
     GLFWwindow* window = bgui::set_up_glfw(1280, 720, "BGUI Exemple");
 
     bgui::set_up_freetype();
-    bgui::set_up_opengl3();
+    bgui::set_up_gl3();
     [...]
 ```
 
@@ -95,7 +95,7 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         bgui::glfw_update(); // update events
         bgui::update();       // update layout
-        bgui::opengl3_render(
+        bgui::gl3_render(
             bgui::get_draw_data() // render the layout data
         );
         glfwSwapBuffers(window);
@@ -103,7 +103,7 @@ int main() {
 
     // don't forget to clean-up the trash!
     bgui::shutdown_lib();
-    bgui::shutdown_opengl3();
+    bgui::shutdown_gl3();
     bgui::shutdown_freetype();
     bgui::shutdown_glfw();
     return 0;

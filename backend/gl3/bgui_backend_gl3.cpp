@@ -1,6 +1,6 @@
 #include <glad/glad.h>
-#include "bgui_backend_opengl3.hpp"
-#include "opengl3_shader.hpp"
+#include "bgui_backend_gl3.hpp"
+#include "gl3_shader.hpp"
 #include <bgui.hpp>
 #include <os/os.hpp>
 #include <unordered_map>
@@ -105,7 +105,7 @@ GLuint bgui::get_quad_vao() {
 }
 
 // Safe function to obtain/generate texture (fixed with DEBUG logic)
-GLuint bgui::opengl3_get_texture(const bgui::texture& tex) {
+GLuint bgui::gl3_get_texture(const bgui::texture& tex) {
 
     const std::string key = build_texture_cache_key(tex);
     auto it = m_texture_cache.find(key);
@@ -188,7 +188,7 @@ GLuint bgui::opengl3_get_texture(const bgui::texture& tex) {
 }
 
 // Clear texture cache (delete GL textures)
-void bgui::opengl3_clear_texture_cache() {
+void bgui::gl3_clear_texture_cache() {
     for (auto& kv : m_texture_cache) {
         GLuint id = kv.second;
         if (id) glDeleteTextures(1, &id);
@@ -196,8 +196,8 @@ void bgui::opengl3_clear_texture_cache() {
     m_texture_cache.clear();
 }
 
-// OpenGL3 initial setup
-void bgui::set_up_opengl3() {
+// gl3 initial setup
+void bgui::set_up_gl3() {
     // gladLoadGL returns non-zero on success (depending on your glad configuration).
     // If you use gladLoadGLLoader you need to call gladLoadGLLoader((GLADloadproc)glfwGetProcAddress) earlier.
     if (gladLoadGL())
@@ -218,16 +218,16 @@ void bgui::set_up_opengl3() {
 }
 
 // Shutdown safely - must be called while OpenGL context is valid
-void bgui::shutdown_opengl3() {
+void bgui::shutdown_gl3() {
     // delete textures
-    opengl3_clear_texture_cache();
+    gl3_clear_texture_cache();
 
     // reset and delete VAO/VBO
     s_quad_vao.reset();
 }
 
 // Render main
-void bgui::opengl3_render(bgui::draw_data* data) {
+void bgui::gl3_render(bgui::draw_data* data) {
     // basic clear
     const auto& theme = bgui::get_theme();
     glClearColor(theme.m_clear_color[0],
@@ -247,14 +247,14 @@ void bgui::opengl3_render(bgui::draw_data* data) {
 
     // We'll avoid binding/unbinding shader for each quad:
     // track last shader to reduce state changes
-    bgl::opengl3_shader* last_shader = nullptr;
+    bgl::gl3_shader* last_shader = nullptr;
 
     // process all quad requests
     while (!data->m_quad_requests.empty()) {
         auto call = data->m_quad_requests.front();
         data->m_quad_requests.pop();
 
-        auto* shader = bgl::get_opengl3_shader_from_tag(call.m_material.m_shader_tag);
+        auto* shader = bgl::get_gl3_shader_from_tag(call.m_material.m_shader_tag);
         if (!shader) continue;
 
         // Bind shader only if it's different from last used
@@ -266,7 +266,7 @@ void bgui::opengl3_render(bgui::draw_data* data) {
 
         if (call.m_material.m_use_tex) {
             glActiveTexture(GL_TEXTURE0);
-            GLuint texid = opengl3_get_texture(call.m_material.m_texture);
+            GLuint texid = gl3_get_texture(call.m_material.m_texture);
             glBindTexture(GL_TEXTURE_2D, texid);
             shader->set("tex", 0); // sampler unit 0
         } else {

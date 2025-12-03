@@ -45,7 +45,7 @@
     #include "backend/bgui_backend_glfw.hpp"
 #endif
 #ifdef BGUI_USE_OPENGL
-    #include "backend/bgui_backend_opengl3.hpp"
+    #include "backend/bgui_backend_gl3.hpp"
 #elif defined(BGUI_USE_VULKAN)
     #include "backend/bgui_backend_vulkan.hpp"
 #endif

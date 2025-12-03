@@ -10,8 +10,8 @@ endif()
 
 # OpenGL backend
 if(BGUI_USE_OPENGL)
-    add_subdirectory(opengl3)
-    target_link_libraries(bgui_backend INTERFACE bgui_backend_opengl3)
+    add_subdirectory(gl3)
+    target_link_libraries(bgui_backend INTERFACE bgui_backend_gl3)
 endif()
 
 if(BGUI_USE_VULKAN)
