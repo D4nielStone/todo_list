@@ -5,9 +5,7 @@
 namespace bgui {
     enum class mode {
         modular,
-        pixel,
-        wrap_content,
-        match_parent
+        pixel
     };
     enum class orientation {
         vertical,

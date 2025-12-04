@@ -82,7 +82,7 @@ int main() {
     // Cross alignment (horizontal)
     panel.set_cross_alignment(bgui::alignment::stretch);
     panel.set_width(300/*, bgui::pixel*/); // Pixel is default
-    panel.set_height(1.f, bgui::mode::relative);
+    panel.set_height(1.f, bgui::mode::modular);
 
     // Adding elements
     panel.add<bgui::text>("Hello World!", 0.5f);

@@ -16,4 +16,4 @@ namespace bgui {
         void fit_to_content() override;
         bgui::layout* as_layout() override { return this; }
     };
-}// namespace lay
+}// namespace bgui
