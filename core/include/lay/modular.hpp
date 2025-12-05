@@ -16,7 +16,6 @@ namespace bgui {
     
         void update() override;
         void set_orientation(const orientation& ori) { m_orientation = ori; };
-        void fit_to_content() override;
         bgui::layout* as_layout() override { return this; }
     };
 }// namespace lay

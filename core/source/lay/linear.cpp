@@ -13,11 +13,11 @@ void linear::update() {
 
     // updates the logic and size of child elements
     for(auto& elem : m_elements) {
-        elem->update();
+        // process the requested size based on the available size.
         elem->update_size(get_final_size() - vec2i{
             get_padding()[0] + get_padding()[2],
             get_padding()[1] + get_padding()[3]
-            }*2);
+            });
     }
 
     const bool vertical = (m_orientation == orientation::vertical);
@@ -91,5 +91,7 @@ void linear::update() {
 
         // Advance in main axis (add child margin on the main axis if any)
         cursor_main += elem->get_final_size()[main_index] + elem->get_margin()[main_index+2];
+        // finally update the element. that function is mostly used by layouts.
+        elem->update();
     }
 }
