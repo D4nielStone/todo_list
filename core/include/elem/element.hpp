@@ -57,12 +57,9 @@ public:
     void set_max_size(int width, int height);
 
     // Requested size
-    void set_size(float width, float height);
-    void set_width(mode m, float value = 100.f);
-    void set_height(mode m, float value = 100.f);
-    void set_final_rect(int x, int y, int w, int h) {
-        m_rect = vec4i({x, y, w, h});
-    }
+    void request_size(float width, float height);
+    void request_width(mode m, float value = 100.f);
+    void request_height(mode m, float value = 100.f);
 
     // Material / visibility
     void set_shader_tag(const std::string& shd);
@@ -75,17 +72,21 @@ public:
     vec2i get_max_size() const { return m_max_size; }
 
     // Final rect (computed by layout)
-    int get_final_x()     const { return m_rect[0]; }
-    int get_final_y()     const { return m_rect[1]; }
-    int get_final_width() const { return m_rect[2]; }
-    int get_final_height()const { return m_rect[3]; }
+    int processed_x()     const { return m_rect[0]; }
+    int processed_y()     const { return m_rect[1]; }
+    int processed_width() const { return m_rect[2]; }
+    int processed_height()const { return m_rect[3]; }
 
-    vec2i get_final_position() const { return vec2i({m_rect[0], m_rect[1]}); }
-    vec2i get_final_size()     const { return vec2i({m_rect[2], m_rect[3]}); }
-    vec4i get_final_rect()     const { return m_rect; }
+    void set_final_rect(int x, int y, int w, int h) {m_rect = vec4i({x, y, w, h}); }
+    void set_final_position(int x, int y) {m_rect[0] = x; m_rect[1] = y;}
+    void set_final_size(int x, int y) {m_rect[2] = x; m_rect[3] = y;}
+
+    vec2i processed_position() const { return vec2i({m_rect[0], m_rect[1]}); }
+    vec2i processed_size()     const { return vec2i({m_rect[2], m_rect[3]}); }
+    vec4i processed_rect()     const { return m_rect; }
 
     // Requested size
-    vec2 get_requested_size() const { return m_requested_size; }
+    vec2 requested_size() const { return m_requested_size; }
     vec<2,mode> get_requested_mode() const { return m_requested_mode; }
 
     // Margin / Padding / Border

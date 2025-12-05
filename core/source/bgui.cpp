@@ -69,10 +69,10 @@ bool update_inputs(bgui::layout &lay){
                 return true;
             }
         
-        float x = elem->get_final_x();
-        float y = elem->get_final_y();
-        float w = elem->get_final_width();
-        float h = elem->get_final_height();
+        float x = elem->processed_x();
+        float y = elem->processed_y();
+        float w = elem->processed_width();
+        float h = elem->processed_height();
 
         bool inside =
             mx >= x &&

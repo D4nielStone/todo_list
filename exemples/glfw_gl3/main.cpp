@@ -13,15 +13,15 @@ int main() {
     // Adding elements
     auto& panel = root.add<bgui::linear>(bgui::orientation::vertical);
     panel.set_padding(10, 2);
-    panel.set_width(bgui::mode::pixel, 300.f);
-    panel.set_height(bgui::mode::match_parent);
+    panel.request_width(bgui::mode::pixel, 300.f);
+    panel.request_height(bgui::mode::match_parent);
     panel.set_visible(true);
 
     auto& txt = panel.add<bgui::text>("Linear Layout Exemple", 0.4f);
-    txt.set_width(bgui::mode::match_parent);
+    txt.request_width(bgui::mode::match_parent);
     txt.set_alignment(bgui::alignment::center);
     auto& button = panel.add<bgui::button>("Button Exemple", 0.4f, [](){});
-    button.set_width(bgui::mode::match_parent);
+    button.request_width(bgui::mode::match_parent);
 
     // individual alignments
     bgui::apply_theme(bgui::dark_theme);

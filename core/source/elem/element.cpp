@@ -55,16 +55,16 @@ void element::set_max_size(int width, int height) {
 }
 
 // Requested size
-void element::set_size(float width, float height) {
+void element::request_size(float width, float height) {
     m_requested_size[0] = width;
     m_requested_size[1] = height;
 }
 
-void element::set_height(bgui::mode m, float h) {
+void element::request_height(bgui::mode m, float h) {
     m_requested_mode[1] = m;
     m_requested_size[1] = h;
 }
-void element::set_width(bgui::mode m, float w) {
+void element::request_width(bgui::mode m, float w) {
     m_requested_mode[0] = m;
     m_requested_size[0] = w;
 }

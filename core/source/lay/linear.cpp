@@ -14,7 +14,7 @@ void linear::update() {
     // updates the logic and size of child elements
     for(auto& elem : m_elements) {
         // process the requested size based on the available size.
-        elem->update_size(get_final_size() - vec2i{
+        elem->update_size(processed_size() - vec2i{
             get_padding()[0] + get_padding()[2],
             get_padding()[1] + get_padding()[3]
             });
@@ -28,13 +28,13 @@ void linear::update() {
     int pad_main_start = (vertical ? m_padding[1] : m_padding[0]);
     int pad_main_end = (vertical ? m_padding[3] : m_padding[2]);
     // Available size on main axis (respect padding)
-    const int available_main = get_final_size()[main_index] - (pad_main_start + pad_main_end);
+    const int available_main = processed_size()[main_index] - (pad_main_start + pad_main_end);
 
     int elem_total_main = 0;
 
     // Sum child sizes + spacing
     for (auto& elem : m_elements) {
-        elem_total_main += elem->get_final_size()[main_index] + elem->get_margin()[main_index] + elem->get_margin()[main_index+2];
+        elem_total_main += elem->processed_size()[main_index] + elem->get_margin()[main_index] + elem->get_margin()[main_index+2];
     }
 
     // Starting cursor depending on alignment
@@ -61,8 +61,8 @@ void linear::update() {
 
         int cross_pos = 0;
 
-        const int cross_size = elem->get_final_size()[cross_index];
-        const int container_cross = get_final_size()[cross_index];
+        const int cross_size = elem->processed_size()[cross_index];
+        const int container_cross = processed_size()[cross_index];
 
         int pad_cross_start = (!vertical ? m_padding[1] : m_padding[0]);
         int pad_cross_end = (!vertical ? m_padding[3] : m_padding[2]);
@@ -84,13 +84,13 @@ void linear::update() {
 
         // Set position
         if (vertical) {
-            elem->set_final_rect(cross_pos + get_final_x(), cursor_main + get_final_y(), elem->get_final_width(), elem->get_final_height());
+            elem->set_final_rect(cross_pos + processed_x(), cursor_main + processed_y(), elem->processed_width(), elem->processed_height());
         } else {
-            elem->set_final_rect(cursor_main + get_final_x(), cross_pos + get_final_y(), elem->get_final_width(), elem->get_final_height());
+            elem->set_final_rect(cursor_main + processed_x(), cross_pos + processed_y(), elem->processed_width(), elem->processed_height());
         }
 
         // Advance in main axis (add child margin on the main axis if any)
-        cursor_main += elem->get_final_size()[main_index] + elem->get_margin()[main_index+2];
+        cursor_main += elem->processed_size()[main_index] + elem->get_margin()[main_index+2];
         // finally update the element. that function is mostly used by layouts.
         elem->update();
     }

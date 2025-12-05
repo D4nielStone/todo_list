@@ -100,21 +100,21 @@ void bgui::text::get_requests(bgui::draw_data* data) {
         if (it == chs.end()) continue;
         const auto& ch = it->second;
 
-        int originx = get_final_x();
+        int originx = processed_x();
         switch(m_self_alignment) {
             case bgui::alignment::start:
-                originx = get_final_x();
+                originx = processed_x();
                 break;
             case bgui::alignment::center:
-                originx = get_final_x() + (get_final_width() - total_width) / 2;
+                originx = processed_x() + (processed_width() - total_width) / 2;
                 break;
             case bgui::alignment::end:
-                originx = get_final_x() + (get_final_width() - total_width);
+                originx = processed_x() + (processed_width() - total_width);
                 break;
         }
 
         float xpos = originx + line_x + m_scale * ch.bearing[0];
-        float ypos = get_final_y() + line_y - (ch.bearing[1] * m_scale - ch.size[1] * m_scale);
+        float ypos = processed_y() + line_y - (ch.bearing[1] * m_scale - ch.size[1] * m_scale);
 
         float w = m_scale * ch.size[0];
         float h = m_scale * ch.size[1];
@@ -130,5 +130,5 @@ void bgui::text::get_requests(bgui::draw_data* data) {
 
     float total_height = line_count * (ascent + descent + line_gap);
 
-    set_size(total_width, total_height);
+    request_size(total_width, total_height);
 }
