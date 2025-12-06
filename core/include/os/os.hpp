@@ -20,6 +20,7 @@ namespace bgui {
     struct windowio {
         bgui::vec2i m_size{800, 600};
         bgui::vec2i m_mouse_position{0, 0};
+        bgui::vec2i m_last_mouse_pos{0, 0};
         std::unordered_map<input_key, input_action> m_input_map;
         std::string m_title{""};
         bool m_last_mouse_left = false;

@@ -81,7 +81,10 @@ bool update_inputs(bgui::layout &lay){
             my <= y + h;
         if(inside) {
             elem->on_mouse_hover();
-            if(mouse_now) elem->on_pressed();
+            if(mouse_now) {
+                elem->on_pressed();
+                elem->on_dragged(m - bgui::get_window().m_last_mouse_pos);
+            }
             if(mouse_click) elem->on_clicked();
             else if(mouse_released) elem->on_released();
         }
@@ -107,7 +110,9 @@ void bgui::update() {
     bgui::m_main_layout->update();
 
     update_inputs(*bgui::m_main_layout);
+
     bgui::get_window().m_last_mouse_left = bgui::get_pressed(bgui::input_key::mouse_left);
+    bgui::get_window().m_last_mouse_pos = bgui::get_mouse_position();
 
     // get new requests
     if(!get_draw_data()->m_quad_requests.empty()) std::cout << "[BGUI] Warning: draw data not empty at beginning of frame.\nMake sure you are resetting draw data each frame.\n";

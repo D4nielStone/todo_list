@@ -114,6 +114,7 @@ public:
     virtual float content_width(){return 0.f;};
     virtual float content_height(){return 0.f;};
     virtual void on_pressed() {};
+    virtual void on_dragged(const vec2i& mouse_delta) {};
     virtual void on_clicked() {};
     virtual void on_released() {};
     virtual void on_mouse_hover() {};
