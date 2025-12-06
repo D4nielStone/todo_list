@@ -29,17 +29,19 @@ int main() {
     auto& win = root.add<bgui::linear>(bgui::orientation::vertical);
     win.set_final_position(200, 100);
     win.request_size(400, 300);
-    win.get_material().set("bg_color", bgui::color({0.3f, 0.3f, 0.3f, 1.f}));
     win.set_visible(true);
 
     // testing the header:
     auto& header = win.add<bgui::linear>(bgui::orientation::horizontal);
-    header.get_material().set("bg_color", bgui::color({0.2f, 0.2f, 0.2f, 1.f}));
     header.request_height(bgui::mode::wrap_content);
     header.request_width(bgui::mode::match_parent);
     header.add<bgui::button>("[icon]", 0.35f, [](){});
-    header.add<bgui::text>("Window Title", 0.35f).request_width(bgui::mode::stretch);
-    header.add<bgui::button>("[X]", 0.35f, [](){});
+    auto& title = header.add<bgui::text>("Window Title", 0.35f);
+    title.request_width(bgui::mode::stretch);
+    title.set_alignment(bgui::alignment::center);
+    header.add<bgui::button>("[X]", 0.35f, [&](){
+        root.remove(&win);
+    });
     header.set_visible(true);
 
     // Theme must be applyed in the end
