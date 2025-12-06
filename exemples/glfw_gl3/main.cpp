@@ -27,6 +27,17 @@ int main() {
 
     // window widget
     auto& win = root.add<bgui::window>("Hello Bubble!");
+    auto& context = win.add<bgui::linear>(bgui::orientation::vertical);
+    context.request_height(bgui::mode::stretch);
+    context.request_width(bgui::mode::match_parent);
+    context.set_padding(10, 10);
+
+    context.add<bgui::text>("This is a window widget exemple.", 0.35f);
+    auto& txt2 = context.add<bgui::text>("Centered text", 0.35f);
+    txt2.set_alignment(bgui::alignment::center);
+    txt2.request_width(bgui::mode::stretch);
+    auto& button2 = context.add<bgui::button>("Button inside window", 0.35f, [](){});
+    button2.request_width(bgui::mode::match_parent);
 
     // Theme must be applyed in the end
     bgui::apply_theme(bgui::dark_theme);
