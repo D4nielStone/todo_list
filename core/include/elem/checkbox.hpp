@@ -10,7 +10,8 @@ namespace bgui {
     public:
         /// @brief Simple constructor
         /// @param id Will be processed as a global variable and accessible anytime.
-        checkbox(const char* id) : element(id) {};
+        checkbox() = default;
+        checkbox(const char* id) : element(id), m_label(nullptr) {};
         ~checkbox() = default;
         
         //void on_clicked() override;
