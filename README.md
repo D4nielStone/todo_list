@@ -73,6 +73,9 @@ int main() {
 
     // initialize the library
     bgui::set_up();
+    // your interface here [...]
+    // initialize the library
+    bgui::set_up();
 
     // Build interface here [...]
 
