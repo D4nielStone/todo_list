@@ -5,27 +5,15 @@
 
 #include "utils/style.hpp"
 #include "utils/draw.hpp"
+#include "utils/uid.hpp"
+#include "utils/border.hpp"
 
 namespace bgui {
-    union uid {
-        inline static unsigned int s_nextid {0};
-        unsigned int m_uint;
-        const char* m_str;
-        uid() : m_uint(s_nextid++) {}
-        uid(const char* s)  : m_str(s+s_nextid++) {}
-    };
     class layout;
-    struct border {
-        vec2i m_size = vec2i(1);
-        color m_color = color(1.f);
-        float m_radius = 2.f;
-    };
 
-    class element {
+    // @brief The small part of the ui
+    class element : public uid {
     protected:
-        bool m_has_tag;
-        bgui::uid m_uid;
-
         layout* m_parent {nullptr};
         material m_material;
         bool m_visible {true};
@@ -46,10 +34,10 @@ namespace bgui {
         // FINAL COMPUTED RECT (layout writes this)
         vec4i m_rect {0, 0, 0, 0}; // x, y, width, height
     public:
-        element();
+        element() = default;
+        element(const std::string& tag) : uid(tag){};
         /// @brief Tag Consturctor
         /// Creates a uid based on const char* type.
-        element(const char* tag);
         virtual ~element() = default;
 
         // Margin
@@ -127,13 +115,6 @@ namespace bgui {
         }
         vec2i get_drag() const;
         
-        // id
-        unsigned int get_id() const {
-            if(!m_has_tag)
-                return m_uid.m_uint;
-            else return static_cast<unsigned int>(*m_uid.m_str);
-        }
-
         void update_size(const vec2i& available_size);
         virtual void update();
         virtual void apply_style(const style& style){ 

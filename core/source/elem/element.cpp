@@ -5,12 +5,6 @@
 
 using namespace bgui;
 
-element::element() : m_has_tag(false) {
-}
-// TODO: chande id system type
-element::element(const char* tag) : m_has_tag(true), m_uid(tag) {
-}
-
 // Margin
 void element::set_margin(int left, int top, int right, int bottom) {
     m_margin[0] = left;
