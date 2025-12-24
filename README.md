@@ -70,6 +70,8 @@ int main() {
     bgui::set_up_gl3();
     bgui::set_up_freetype();
 
+    // initialize the library
+    bgui::set_up();
     // your interface here [...]
 
     while(!bgui::should_close_glfw()) {
