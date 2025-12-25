@@ -17,7 +17,7 @@ namespace bgui {
         ~layout() = default;
     
         void apply_style(const bgui::style& style) override {
-            element::apply_style(style);
+        element::apply_style(style);
             for(auto& e: m_elements) e->apply_style(style);
         };
     
