@@ -24,6 +24,10 @@ void bgui::input_area::on_released() {
 void bgui::input_area::on_mouse_hover() {
 }
 
+bgui::text& bgui::input_area::get_label() {
+    return *m_text;
+}
+
 void bgui::input_area::update() {
     if(m_input_buffer.empty()) {
         m_text->set_buffer(m_placeholder);
