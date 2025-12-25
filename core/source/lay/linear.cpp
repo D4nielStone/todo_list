@@ -39,8 +39,8 @@ void linear::update() {
             elem->update_size(available);
 
             fixed_main += elem->processed_size()[main];
-            fixed_main += elem->get_margin()[main];
-            fixed_main += elem->get_margin()[main + 2];
+            fixed_main += elem->get_padding()[main];
+            fixed_main += elem->get_padding()[main + 2];
         } else {
             stretch_count++;
         }
@@ -73,9 +73,9 @@ void linear::update() {
     // ─────────────────────────────
     int content_main = 0;
     for (auto& elem : m_elements) {
-        content_main += elem->get_margin()[main];
+        content_main += elem->get_padding()[main];
         content_main += elem->processed_size()[main];
-        content_main += elem->get_margin()[main + 2];
+        content_main += elem->get_padding()[main + 2];
     }
 
     int free_space = available[main] - content_main;
@@ -103,11 +103,9 @@ void linear::update() {
     // FINAL PASS — place elements
     // ─────────────────────────────
     for (auto& elem : m_elements) {
-
-        // Main-axis margin before
+        // margin before
         cursor_main += elem->get_margin()[main];
 
-        // Cross-axis position
         int cross_pos = pad_cross_start + elem->get_margin()[cross];
         int cross_size = elem->processed_size()[cross];
 
@@ -130,7 +128,6 @@ void linear::update() {
                 break;
         }
 
-        // Set rect
         if (vertical) {
             elem->set_final_rect(
                 cross_pos + processed_x(),
@@ -147,7 +144,7 @@ void linear::update() {
             );
         }
 
-        // Advance cursor
+        // advance cursor
         cursor_main += elem->processed_size()[main];
         cursor_main += elem->get_margin()[main + 2];
 
@@ -155,40 +152,53 @@ void linear::update() {
     }
 }
 
-float bgui::linear::content_height() {
-    if (m_elements.empty()) return 0.f;
-
-    const bool vertical = (m_orientation == orientation::vertical);
-    int total_height = 0;
-
-    for (auto& elem : m_elements) {
-        if (vertical) {
-            total_height += elem->get_margin()[1] + elem->get_margin()[3] +  elem->processed_height();
-        } else {
-            // In horizontal layout, consider only the largest height
-            total_height = std::max(total_height, elem->processed_height() + elem->get_margin()[1] + elem->get_margin()[3]);
-        }
+float linear::content_height() {
+    if (m_elements.empty()) {
+        return m_padding[1] + m_padding[3];
     }
 
-    return total_height;
+    const bool vertical = (m_orientation == orientation::vertical);
+    int total = 0;
+
+    for (auto& elem : m_elements) {
+        int h = elem->processed_height() +
+                elem->get_margin()[1] +
+                elem->get_margin()[3]; 
+
+        if (vertical) {
+            total += h;
+        } else {
+            total = std::max(total, h);
+        }
+    }
+    
+    total += m_padding[1] + m_padding[3];
+
+    return (float)total;
 }
 
 
 float bgui::linear::content_width() {
-    if (m_elements.empty()) return 0.f;
+    if (m_elements.empty()) {
+        return m_padding[0] + m_padding[2];
+    }
 
     const bool vertical = (m_orientation == orientation::vertical);
     int total_width = 0;
 
     for (auto& elem : m_elements) {
-        total_width += elem->processed_width();
+        int w = elem->processed_width() +
+                elem->get_margin()[0] +
+                elem->get_margin()[2]; 
+
         if (!vertical) {
-            total_width += elem->get_margin()[0] + elem->get_margin()[2];
+            total_width += w;
         } else {
-            // In horizontal layout, consider only the largest height
-            total_width = std::max(total_width, elem->processed_height() + elem->get_margin()[0] + elem->get_margin()[2]);
+            total_width = std::max(total_width, w);
         }
     }
+    
+    total_width += m_padding[0] + m_padding[2];
 
-    return total_width;
+    return (float)total_width;
 }

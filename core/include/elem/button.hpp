@@ -18,6 +18,7 @@ namespace bgui {
         void on_mouse_hover() override;
         float content_width() override;
         float content_height() override;
+        text& get_label();
         void update() override;
         void get_requests(bgui::draw_data* calls) override;
         void apply_style(const bgui::style& t) override;

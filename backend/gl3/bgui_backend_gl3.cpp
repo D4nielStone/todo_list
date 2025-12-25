@@ -9,9 +9,8 @@
 #include <memory>
 #include <string>
 #include <sstream>
-#include <algorithm> // Necessário para std::find_if
+#include <algorithm>
 
-// Define uma cor de debug distinta (Magenta)
 #define DEBUG_COLOR_R 255
 #define DEBUG_COLOR_G 0
 #define DEBUG_COLOR_B 255
@@ -228,6 +227,7 @@ void bgui::shutdown_gl3() {
 
 // Render main
 void bgui::gl3_render(bgui::draw_data* data) {
+    if(data->m_quad_requests.empty()) throw std::runtime_error("Nothing to render. Have you update the interface?");
     // basic clear
     const auto& style = bgui::get_style();
     glClearColor(style.m_clear_color[0],

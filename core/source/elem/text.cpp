@@ -30,7 +30,7 @@ std::u32string utf8_to_utf32(const std::string& str) {
 }
 
 bgui::text::text(const std::string &buffer, float scale) : m_buffer(buffer),
-    m_font_name("Noto Sans-Condensed#40"), m_scale(scale) {
+    m_font_name("Noto Serif-Medium#40"), m_scale(scale) {
     set_font(m_font_name);
     m_material.m_use_tex = true;
     m_material.m_shader_tag = "ui::text";
@@ -42,7 +42,10 @@ void bgui::text::update() {
 }
 void bgui::text::set_font(const std::string &path) {
     auto& i = bgui::font_manager::get_font_manager();
-    m_font = i.get_font(path);
+    if(path.find('#') == path.npos)
+        m_font = i.get_font(path + "#" + std::to_string((int)bgui::font_manager::m_default_resolution));
+    else
+        m_font = i.get_font(path);
 }
 
 float bgui::text::get_text_width() {
