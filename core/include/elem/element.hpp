@@ -148,6 +148,13 @@ namespace bgui {
          * @param height The requested height value.
          */
         void request_size(float width, float height);
+        
+        /**
+         * @brief Requests a specific size mode for the element using the currently set sizes.
+         * @param width The requested width mode.
+         * @param height The requested height mode.
+         */
+        void request_mode(mode width, mode height);
 
         /**
          * @brief Requests a specific width with a specified measurement mode.

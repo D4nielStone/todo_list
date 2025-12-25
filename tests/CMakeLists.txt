@@ -9,18 +9,16 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_executable(
-    elem_test
-    test_elem.cpp
+    all_tests
+    all_tests.cpp
 )
 
-target_include_directories(elem_test
+target_include_directories(all_tests
     PRIVATE ${PROJECT_SOURCE_DIR}/core/include
 )
 
 target_link_libraries(
-    elem_test PRIVATE 
+    all_tests PRIVATE 
     bgui
     GTest::gtest_main 
 )
-
-add_test(NAME ElementTest COMMAND elem_test)

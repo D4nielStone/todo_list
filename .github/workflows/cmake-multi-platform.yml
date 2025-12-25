@@ -21,4 +21,4 @@ jobs:
         run: cmake --build out --config Debug
 
       - name: Run Tests
-        run: ctest --test-dir ${{github.workspace}}/out --output-on-failure -C Debug
+        run: ./out/tests/all_tests

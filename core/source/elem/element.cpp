@@ -58,6 +58,11 @@ void element::request_size(float width, float height) {
     m_requested_size[1] = height;
 }
 
+void element::request_mode(mode width, mode height) {
+    m_requested_mode[0] = width;
+    m_requested_mode[1] = height;
+}
+
 void element::request_height(bgui::mode m, float h) {
     m_requested_mode[1] = m;
     m_requested_size[1] = h;
@@ -105,7 +110,7 @@ void bgui::element::apply_style(const style & style) {
     m_style = style;
     m_material.set("bg_color", m_style.m_box_color);
     m_material.set("bordered", (bool)m_style.m_box_color[3]);
-    m_material.set("border_radius", 4.f);
+    m_material.set("border_radius", 2.f);
     m_material.set("border_size", 1.f);
     m_material.set("border_color", m_style.m_button_border_color);
 }
@@ -118,9 +123,9 @@ void element::update_size(const bgui::vec2i& available) {
         switch(m_requested_mode[vertical]) {
             case bgui::mode::pixel:   return m_requested_size[vertical];
             case bgui::mode::percent: return max * (std::clamp(m_requested_size[vertical], 0.f, 100.f)/100);
-            case bgui::mode::match_parent: return max - get_margin()[vertical+2] - get_margin()[vertical];
+            case bgui::mode::match_parent: return max;
             case bgui::mode::wrap_content: return vertical ? content_height() : content_width();
-            case bgui::mode::stretch: return max - get_margin()[vertical+2] - get_margin()[vertical];
+            case bgui::mode::stretch: return max;
         }
         return 0.f;
     };

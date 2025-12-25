@@ -60,3 +60,67 @@ TEST(ElementTest, FinalRectManipulation) {
     EXPECT_EQ(elem.processed_height(), 40);
     EXPECT_EQ(elem.processed_x(), 5);
 }
+const vec2i AVAILABLE_SIZE = {400, 300};
+
+TEST(ElementTest, UpdateSizeCalculation) {
+    element elem;
+
+    // 1. Test pixel mode
+    elem.request_size(100.f, 50.f);
+
+    elem.update_size(AVAILABLE_SIZE); 
+    
+    EXPECT_EQ(elem.processed_width(), 100);
+    EXPECT_EQ(elem.processed_height(), 50);
+
+    // 2. Test percentual mode
+    elem.request_width(mode::percent, 50.f);
+    elem.request_height(mode::percent, 25.f);
+
+    elem.update_size(AVAILABLE_SIZE);
+    
+    // 50% of 400 = 200
+    EXPECT_EQ(elem.processed_width(), 200); 
+    // 25% of 300 = 75
+    EXPECT_EQ(elem.processed_height(), 75);
+
+    // 3. Test match parent
+    elem.request_width(mode::match_parent, 0.f);
+    elem.request_height(mode::match_parent, 0.f);
+    
+    elem.update_size(AVAILABLE_SIZE);
+
+    EXPECT_EQ(elem.processed_width(), 400); 
+    EXPECT_EQ(elem.processed_height(), 300);
+
+    // 4. Test percent and pixel
+    elem.request_width(mode::percent, 10.f);
+    elem.request_height(mode::pixel, 120.f);
+    
+    elem.update_size(AVAILABLE_SIZE);
+
+    // 10% of 400 = 40
+    EXPECT_EQ(elem.processed_width(), 40);
+    EXPECT_EQ(elem.processed_height(), 120);
+
+    // 5. Test padding and margin:
+    // Paddings and Margins SHOULD NOT affect the content.
+    elem.set_padding(10, 10, 10, 10); // L, T, R, B
+    elem.set_margin(5, 5, 5, 5);     // L, T, R, B
+
+    elem.request_size(50.f, 50.f); 
+    elem.request_mode(mode::pixel, mode::pixel); 
+    elem.update_size(AVAILABLE_SIZE);
+
+    EXPECT_EQ(elem.processed_width(), 50);
+    EXPECT_EQ(elem.processed_height(), 50);
+
+    // 6. Test Stretched
+    vec2i stretch_size = {150, 150};
+    elem.request_size(1.f, 1.f);
+    elem.request_mode(mode::stretch, mode::stretch);
+    elem.update_size(stretch_size);
+    
+    EXPECT_EQ(elem.processed_width(), 150);
+    EXPECT_EQ(elem.processed_height(), 150);
+}
