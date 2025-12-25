@@ -239,6 +239,14 @@ namespace bgui {
         virtual void apply_style(const style& style);
 
         /**
+         * @brief Getter to enable user to edit elemnt's local style.
+         * @returns A style containing informations from it's style.
+         */
+        style& get_style() {
+            return m_style;
+        }
+
+        /**
          * @brief Calculates the size based on the available space and requested size.
          * This is a layout-related method.
          * @param available_size The size provided by the parent layout.
