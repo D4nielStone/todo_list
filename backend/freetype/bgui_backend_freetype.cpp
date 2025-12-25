@@ -25,11 +25,11 @@ void bgui::set_up_freetype() {
 
     std::cout << "[FREETYPE] Total system fonts found: " << s_system_fonts.size() << "\n";
 
-    if (s_system_fonts.find("Noto Sans-Condensed") == s_system_fonts.end()) {
+    if (s_system_fonts.find("Noto Serif-Medium") == s_system_fonts.end()) {
         std::cerr << "[FREETYPE] WARNING: Default font not found.\n";
     } else {
-        std::cout << "[FREETYPE] Loading default font: Noto Sans-Condensed\n";
-        ft_load_font("Noto Sans-Condensed", s_system_fonts["Noto Sans-Condensed"],
+        std::cout << "[FREETYPE] Loading default font: Noto Serif-Medium\n";
+        ft_load_font("Noto Serif-Medium", s_system_fonts["Noto Serif-Medium"],
                      bgui::font_manager::m_default_resolution);
     }
 }
